@@ -6,7 +6,7 @@ import consolelog.global.config.BaseEntity;
 import consolelog.image.service.AmazonS3Service;
 import consolelog.member.domain.*;
 import consolelog.member.dto.EditNicknameRequest;
-import consolelog.member.dto.NicknameResponse;
+import consolelog.member.dto.ProfileResponse;
 import consolelog.member.dto.SignupRequest;
 import consolelog.member.dto.UniqueResponse;
 import consolelog.member.exception.DuplicateNicknameException;
@@ -101,9 +101,9 @@ public class MemberService extends BaseEntity {
         }
     }
 
-    public NicknameResponse findNickname(AuthInfo authInfo) {
+    public ProfileResponse findProfile(AuthInfo authInfo) {
         Member member = memberRepository.findById(authInfo.getId())
                 .orElseThrow(MemberNotFoundException::new);
-        return NicknameResponse.of(member);
+        return ProfileResponse.of(member);
     }
 }

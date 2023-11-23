@@ -13,7 +13,7 @@ export default defineConfig({
       "/api": "http://localhost:8080",
       "/post": "http://localhost:8080",
       "/board": "http://localhost:8080",
-      "/login":"http://localhost:8080",
+      "/login": "http://localhost:8080",
     },
-  }
+  },
 });

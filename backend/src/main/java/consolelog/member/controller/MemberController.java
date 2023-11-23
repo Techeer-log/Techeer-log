@@ -2,22 +2,20 @@ package consolelog.member.controller;
 
 import consolelog.auth.dto.AuthInfo;
 import consolelog.global.result.ResultResponse;
-import consolelog.image.service.AmazonS3Service;
 import consolelog.member.domain.Member;
 import consolelog.member.dto.MemberResponse;
-import consolelog.member.dto.NicknameResponse;
+import consolelog.member.dto.ProfileResponse;
 import consolelog.member.dto.SignupRequest;
 import consolelog.member.service.MemberService;
 import consolelog.global.support.token.Login;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import static consolelog.global.result.ResultCode.FIND_NICKNAME_SUCCESS;
+import static consolelog.global.result.ResultCode.FIND_PROFILE_SUCCESS;
 import static consolelog.global.result.ResultCode.SIGNUP_SUCCESS;
 
 @RestController
@@ -51,11 +49,11 @@ public class MemberController {
 //        return ResponseEntity.ok(uniqueResponse);
 //    }
 
-    @Operation(summary = "닉네임 조회", description = "닉네임 조회 기능")
-    @GetMapping("/nickname")
-    public ResponseEntity<ResultResponse<NicknameResponse>> findNickname(@Login AuthInfo authInfo) {
-        NicknameResponse nicknameResponse = memberService.findNickname(authInfo);
-        ResultResponse<NicknameResponse> resultResponse = new ResultResponse<>(FIND_NICKNAME_SUCCESS, nicknameResponse);
+    @Operation(summary = "프로필 조회", description = "프로필 조회 기능")
+    @GetMapping("/profile")
+    public ResponseEntity<ResultResponse<ProfileResponse>> findProfile(@Login AuthInfo authInfo) {
+        ProfileResponse profileResponse = memberService.findProfile(authInfo);
+        ResultResponse<ProfileResponse> resultResponse = new ResultResponse<>(FIND_PROFILE_SUCCESS, profileResponse);
         return ResponseEntity.ok().body(resultResponse);
     }
 //    @PatchMapping("/nickname")

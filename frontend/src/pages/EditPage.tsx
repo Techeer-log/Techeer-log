@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useState, ChangeEvent, useRef, useEffect } from "react";
 import MarkdownPreview from "../components/MarkdownPreview";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { accessTokenState } from "../states/Atom";
+import { useNavigate, useParams } from "react-router-dom";
+import { accessTokenState, editDetail, editTitle } from "../states/Atom";
 import { useRecoilValue } from "recoil";
 
 const Background = styled.div`
@@ -55,7 +55,6 @@ const Underbar = styled.div`
   margin-bottom: 1rem;
   border-radius: 1px;
 `;
-
 
 const Buttons = styled.div`
   display: flex;
@@ -203,11 +202,14 @@ const RightBox = styled.div`
   color: #ececec;
 `;
 
-function PostingPage() {
+function EditPage() {
   const navigate = useNavigate();
-  const [markdown, setMarkdown] = useState("");
-  const [title, setTitle] = useState("");
+  const editingTitle = useRecoilValue(editTitle);
+  const editingDetail = useRecoilValue(editDetail);
+  const [markdown, setMarkdown] = useState(editingDetail);
+  const [title, setTitle] = useState(editingTitle);
   const accesstoken = useRecoilValue(accessTokenState);
+  const { postId } = useParams();
 
   const formData = new FormData();
 
@@ -270,7 +272,7 @@ function PostingPage() {
         try {
           formData.append("multipartFile", selectedImage);
 
-          const response = await axios.post("api/image/upload", formData, {
+          const response = await axios.post("/api/image/upload", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               authorization: accesstoken,
@@ -292,8 +294,8 @@ function PostingPage() {
   };
   const handleSubmit = async (): Promise<void> => {
     try {
-      const response = await axios.post(
-        "api/v1/posts",
+      const response = await axios.put(
+        `/api/v1/posts/${postId}`,
         {
           title,
           content: markdown,
@@ -485,7 +487,7 @@ function PostingPage() {
             </span>
           </BackButton>
           <div>
-            <SaveBtn onClick={onSubmit}>출간하기</SaveBtn>
+            <SaveBtn onClick={onSubmit}>수정하기</SaveBtn>
           </div>
         </UnderBox>
       </LeftBox>
@@ -508,4 +510,4 @@ function PostingPage() {
   );
 }
 
-export default PostingPage;
+export default EditPage;

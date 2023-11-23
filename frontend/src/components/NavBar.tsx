@@ -7,8 +7,8 @@ import underpolygon from "../assets/UnderTri.png";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import LoginModal from "../components/LoginModal";
-import { isLoggedInSelector } from "../states/Atom";
-import { useEffect, useRef, useState } from "react";
+import { isLoggedInSelector,  } from "../states/Atom";
+import { useState } from "react";
 import Dropdown from "./Dropdown";
 
 const Background = styled.div`
@@ -132,6 +132,7 @@ function NavBar() {
   const handleCloseModal = () => {
     setShowLoginModal(false);
   };
+
 
 
   return (

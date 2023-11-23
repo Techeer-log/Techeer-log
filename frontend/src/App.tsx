@@ -9,6 +9,7 @@ import BoardPage from "./pages/BoardPage";
 import MyPage from "./pages/Mypage";
 import PostingPage from "./pages/PostingPage";
 import { RecoilRoot } from "recoil";
+import EditPage from "./pages/EditPage";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@1,8..60,300&display=swap');
@@ -95,7 +96,11 @@ const router = createBrowserRouter([
     element: <PostingPage />,
   },
   {
-    path: "/board",
+    path: "/edit/:postId",
+    element: <EditPage />,
+  },
+  {
+    path: "/board/:postId",
     element: <BoardPage />,
   },
 ]);

@@ -10,6 +10,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
+import nopost from "../assets/NoPost.png";
 
 const Background = styled.div`
   width: 100vw;
@@ -174,6 +175,36 @@ const Like = styled.div`
   line-height: normal;
 `;
 
+const Posts = styled.div`
+  width: 100%;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  margin-top: 20rem;
+  flex-direction: column;
+`;
+
+const NoPostImg = styled.img`
+  width: 20rem;
+`;
+
+const NoPostWord = styled.p`
+  display: flex;
+  width: 392px;
+  height: 89px;
+  flex-direction: column;
+  justify-content: center;
+  color: #acacac;
+  text-align: center;
+  font-family: Inter;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+`;
+
 // const ModalWrapper = styled.div`
 //   position: absolute;
 //   z-index: 2;
@@ -185,6 +216,7 @@ interface FormType {
   createdAt: string;
   commentCount: number;
   likeCount: number;
+  id: number;
 }
 
 function MainPage() {
@@ -196,9 +228,8 @@ function MainPage() {
 
   //첫 포스트 요청
   const getPostList = (): void => {
-    console.log(pagenum);
     axios
-      .get("/post/0", {
+      .get("api/v1/posts/list/0", {
         params: { page: pagenum, size: 10, sort: "desc" },
       })
       .then((res) => {
@@ -223,9 +254,8 @@ function MainPage() {
 
   //무한 스크롤 요청
   const getPostList2 = (): void => {
-    console.log(pagenum);
     axios
-      .get("/post/0", {
+      .get("api/v1/posts/list/0", {
         params: { page: pagenum, size: 10, sort: "desc" },
       })
       .then((res) => {
@@ -250,6 +280,11 @@ function MainPage() {
       {lastPost < -1 ? (
         <BackgroundNone>
           <NavBar />
+
+          <Posts>
+            <NoPostImg src={nopost} />
+            <NoPostWord>포스트가 없습니다.</NoPostWord>
+          </Posts>
         </BackgroundNone>
       ) : (
         <Background>
@@ -267,7 +302,7 @@ function MainPage() {
           <Row>
             {posts.length > 0 &&
               posts.map((data: FormType, index) => (
-                <Link to="/board">
+                <Link to={`/board/${data.id}`}>
                   <Box key={index}>
                     <MainImg src={mainimg} />
                     <Bottom>
@@ -301,8 +336,8 @@ function MainPage() {
               ))}
             <div ref={ref}></div>
           </Row>
-          
-      {/* <ModalWrapper>
+
+          {/* <ModalWrapper>
         <LoginModal />
       </ModalWrapper> */}
         </Background>

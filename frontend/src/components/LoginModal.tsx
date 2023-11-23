@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { accessTokenState, refreshTokenState } from "../states/Atom";
 import { Link } from "react-router-dom";
@@ -22,6 +22,7 @@ const ModalBackdrop = styled.div`
   height: 100vh;
   width: 100vw;
 `;
+
 const Box = styled.div`
   display: flex;
   width: 606px;
@@ -145,73 +146,60 @@ const SignUpBtn = styled.div`
 `;
 
 export const Error = styled.span`
-    padding-top: 10px;
-    padding-left: 20%;
-    font-weight: 600;
-    color: tomato;
+  padding-top: 10px;
+  padding-left: 20%;
+  font-weight: 600;
+  color: tomato;
 `;
 
 interface LoginModalProps {
   onClose: () => void; // onClose의 타입을 명시적으로 정의
-  // 다른 prop들...
 }
 
-
-const LoginModal: React.FC<LoginModalProps> = ({onClose}) => {
+const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const  setAccessToken = useSetRecoilState(accessTokenState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
   const setRefreshToken = useSetRecoilState(refreshTokenState);
   // const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState);
   const [error, setError] = useState("");
 
-  const onChange = (e:ChangeEvent<HTMLInputElement>)=>{
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {
-        target:{name, value},
-    } = e
-    
-    if(name === "loginId"){
-        setLoginId(value);
-    }else if(name === "password"){ 
-        setPassword(value);
+      target: { name, value },
+    } = e;
+
+    if (name === "loginId") {
+      setLoginId(value);
+    } else if (name === "password") {
+      setPassword(value);
     }
   };
 
-  // //토큰 저장
-  // const setAuthToken = (accessToken: string) => {
-  //   localStorage.setItem('token', accessToken);
-  // };
-
-  // const getAuthToken = (): string | null => {
-  //   return localStorage.getItem('token');
-  // };
-
-
   const handleLogIn = async () => {
     try {
-      await axios.post('/login', {
-        loginId,
-        password,
-      })
-      .then(response => {
+      await axios
+        .post("api/v1/auth/login", {
+          loginId,
+          password,
+        })
+        .then((response) => {
+          if (response.headers) {
+            const accessToken = response.headers["authorization"];
+            const refreshToken = response.headers["refresh-token"];
 
-        if(response.headers){
-          const accessToken = response.headers['authorization'];
-          const refreshToken = response.headers['refresh-token'];
+            setAccessToken(accessToken);
+            setRefreshToken(refreshToken);
+            console.log(accessToken);
 
-          setAccessToken(accessToken);
-          setRefreshToken(refreshToken);
-
-          // localStorage.setItem('accessToken', accessToken);
-          // localStorage.setItem('refreshToken', refreshToken);
-        }
-      });
-
-
+            // localStorage.setItem('accessToken', accessToken);
+            // localStorage.setItem('refreshToken', refreshToken);
+          }
+        });
     } catch (error) {
       console.log(error);
-      setError("아이디와 비밀번호를 확인하세요.")
+      setError("아이디와 비밀번호를 확인하세요.");
     } finally {
       setLoading(false);
     }
@@ -219,27 +207,22 @@ const LoginModal: React.FC<LoginModalProps> = ({onClose}) => {
 
   const onSubmit = () => {
     try {
-
       setLoading(true);
 
       handleLogIn()
-      .then(() => {onClose();})
-      .catch((error) => {
-        console.log(error);
-      });
-      
-    }catch (e) {
-        console.log(e);
-        // console.log(error.res.data);
-        setError(String(e));
-
-      }finally {
-        setLoading(false);
-      }
+        .then(() => {
+          onClose();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e);
+      setError(String(e));
+    } finally {
+      setLoading(false);
+    }
   };
-
-
-  
 
   return (
     <Modal>
@@ -502,10 +485,27 @@ const LoginModal: React.FC<LoginModalProps> = ({onClose}) => {
                 <section>
                   {/* <HowToLogin>이메일로 로그인</HowToLogin> */}
                   <Form>
-                    <Input type='text' name="loginId" value={loginId} onChange={onChange} placeholder="아이디를 입력하세요."></Input>
-                    <Input type='password' name="password" value={password} onChange={onChange} placeholder="비밀번호를 입력하세요."></Input>
-                    <LoginBtn onClick={onSubmit} value={isLoading? "Loading..." : "Create Account"} >로그인</LoginBtn>
-                    {error !== ""? <Error>{error}</Error>: null}
+                    <Input
+                      type="text"
+                      name="loginId"
+                      value={loginId}
+                      onChange={onChange}
+                      placeholder="아이디를 입력하세요."
+                    ></Input>
+                    <Input
+                      type="password"
+                      name="password"
+                      value={password}
+                      onChange={onChange}
+                      placeholder="비밀번호를 입력하세요."
+                    ></Input>
+                    <LoginBtn
+                      onClick={onSubmit}
+                      value={isLoading ? "Loading..." : "LogIn"}
+                    >
+                      로그인
+                    </LoginBtn>
+                    {error !== "" ? <Error>{error}</Error> : null}
                   </Form>
                 </section>
               </div>
@@ -516,7 +516,6 @@ const LoginModal: React.FC<LoginModalProps> = ({onClose}) => {
                 <Link to="/signup">
                   <SignUpBtn>회원가입</SignUpBtn>
                 </Link>
-                
               </Foot>
             </Contents>
           </RightBox>
@@ -524,6 +523,6 @@ const LoginModal: React.FC<LoginModalProps> = ({onClose}) => {
       </ModalBackdrop>
     </Modal>
   );
-}
+};
 
 export default LoginModal;

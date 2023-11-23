@@ -11,7 +11,7 @@ const Background = styled.div`
     background: #121212;    
 `;
 
-const SignUpBox = styled.div`
+const SignUpBox = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -176,6 +176,7 @@ function SignUp(){
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    // const imgInput = useRef(null);
 
     // useEffect(()=>{
 
@@ -203,51 +204,60 @@ function SignUp(){
         const {files} = e.target;
 
         if(files && files.length === 1) {
-            formData.append('file', files[0]);
+            // formData.append('file', files[0]);
             setFile(files[0]);
-            console.log(files[0].name)
+            // console.log(files[0].name)
         }
     };
 
-//이미지 미리보기
-    // const onPreviewImage = ()=>{
-    //     if(file){
-    //         const reader = new FileReader();
-    //         reader.readAsDataURL(file);
-    //         reader.onloadend = ()=>{
-    //             //
-    //         }
-    //     }
-        
-    // };
-
-
     const handleSignUp = async(): Promise<void> => {
         try{
-            await axios.post("/members/signup",{
-                loginId,
-                nickname,
-                password,
-                passwordConfirmation,
-            });
-
+            if (file) {
+                formData.append('file', file);
+              }
             // formData.append('loginId', loginId);
             // formData.append('nickname', nickname);
             // formData.append('password', password);
             // formData.append('passwordConfirmation', passwordConfirmation);
 
-            // // axios.post에 formData를 직접 전달
-            // await axios.post("/members/signup", formData);
+            const data = {
+                loginId,
+                nickname,
+                password,
+                passwordConfirmation,
+            };
+              
+            const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+              
+            formData.append("data", blob);
 
-            // navigate("/login");
+            //formData 출력해보기
+            // for(const pair of formData.entries()) {
+            //     console.log(pair[0]+ ', '+ pair[1]); 
+            // }
+
+            // axios.post에 formData를 직접 전달
+            await axios.post(
+                "api/v1/members/signup", 
+                formData, 
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                },
+            );
+
+            navigate("/"); // 성공 시 페이지 이동
+
 
         }catch(error){
             console.log(error);
+            setError("회원가입 오류");
         }
     };
 
-    const onSubmit = () => {
-        if(isLoading || loginId==="" || nickname ==="" || password===""){
+    const onSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if(isLoading || file===null || loginId==="" || nickname ==="" || password==="" || passwordConfirmation===""){
             setError("기본정보를 모두 입력하세요")
             return;
         }
@@ -255,11 +265,7 @@ function SignUp(){
         try {
             setLoading(true);
 
-            handleSignUp()
-              .then(() => {})
-              .catch((error) => {
-                console.log(error);
-              });
+            await handleSignUp();
 
           } catch (e) {
             console.log(e);
@@ -267,9 +273,9 @@ function SignUp(){
 
           } finally {
             setLoading(false);
-            navigate("/");
+            
           }
-          console.log(loginId, nickname, password)
+          console.log( nickname+"님 회원가입 완료" )
     };
 
     const handleGoBack = () => {
@@ -278,7 +284,7 @@ function SignUp(){
 
     return(
         <Background>
-            <SignUpBox>
+            <SignUpBox onSubmit={onSubmit} >
                 <Header>
                     <h1>환영합니다!</h1>
                     <p>기본 회원정보를 등록해주세요.</p>
@@ -331,7 +337,6 @@ function SignUp(){
                     <ButtonStyle type='submit' onClick={handleGoBack} bgColor="#D9D9D9" clickColor="#a6a6a6" color="#000000">취소</ButtonStyle>
                     <ButtonStyle 
                         type='submit' 
-                        onClick={onSubmit} 
                         value={isLoading? "Loading..." : "Create Account"} 
                         bgColor="#38E788"
                         clickColor="#2fc673" 

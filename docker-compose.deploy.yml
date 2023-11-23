@@ -23,15 +23,23 @@ services:
     # command: ["--general-log", "--general-log-file=/var/log/mysql.log"]
   nginx:
     image: nginx:1.24.0-alpine-slim
+    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       #docker-compose.yml과 같은 레벨에 둔 nginx.conf를 mount.
+      - ./nginx/test.html:/test/test.html
       - ./nginx/nginx-deploy.conf:/etc/nginx/nginx-deploy.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on:
       - backend
 #      - frontend
-    restart: always
+    expose:
+      - '80'
+      - '443'
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 #    networks:
 #      - app-tier
   backend:
@@ -48,3 +56,13 @@ services:
     ports:
       - "8080:8080"
     command: [ "java", "-jar", "/app.jar" ]
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - nginx
