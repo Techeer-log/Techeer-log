@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -125,4 +125,18 @@ public class Post extends BaseEntity {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post post)) return false;
+        return Objects.equals(id, post.id)
+                && Objects.equals(title, post.title)
+                && Objects.equals(content, post.content)
+                && Objects.equals(member, post.member);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, content, member);
+    }
 }

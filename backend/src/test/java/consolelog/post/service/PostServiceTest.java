@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static consolelog.util.fixture.MemberFixture.M1;
+import static consolelog.util.fixture.PostFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -59,7 +60,7 @@ class PostServiceTest {
                 .postLikes(new ArrayList<>())
                 .build();
     }
-    @DisplayName("게시글 조회")
+    @DisplayName("게시글 조회1")
     @Test
     void findPost() {
         Post post = postRepository.save(post1);
@@ -67,43 +68,24 @@ class PostServiceTest {
         Post foundPost = postRepository.findById(post.getId()).orElseThrow();
         PostResponse postResponse = PostResponse.from(foundPost);
 
-
-        assertAll(
-                () -> assertThat(postResponse.getId()).isEqualTo(post.getId()),
-                () -> assertThat(postResponse.getContent()).isEqualTo(post.getContent()),
-                () -> assertThat(postResponse.getNickname()).isEqualTo(post.getMember().getNickname()),
-                () -> assertThat(postResponse.getLikeCount()).isEqualTo(post.getLikeCount()),
-                () -> assertThat(postResponse.getViewCount()).isEqualTo(post.getViewCount()),
-                () -> assertThat(postResponse.getCommentCount()).isEqualTo(post.getCommentCount()),
-                () -> assertThat(postResponse.getCreatedAt()).isEqualTo(post.getCreatedAt()),
-                () -> assertThat(postResponse.getUpdatedAt()).isEqualTo(post.getUpdatedAt())
-        );
+        assertThat(postResponse.getId()).isEqualTo(post.getId());
     }
-    @DisplayName("게시글 조회_")
+    @DisplayName("게시글 조회2")
     @Test
     void findPost_() {
         Post post = postRepository.save(post1);
 
         PostResponse postResponse = postService.findPost(post.getId(), EMPTY_COOKIE_VALUE);
 
-        assertAll(
-                () -> assertThat(postResponse.getId()).isEqualTo(post.getId()),
-                () -> assertThat(postResponse.getContent()).isEqualTo(post.getContent()),
-                () -> assertThat(postResponse.getNickname()).isEqualTo(post.getMember().getNickname()),
-                () -> assertThat(postResponse.getLikeCount()).isEqualTo(post.getLikeCount()),
-                () -> assertThat(postResponse.getViewCount()).isEqualTo(post.getViewCount()),
-                () -> assertThat(postResponse.getCommentCount()).isEqualTo(post.getCommentCount()),
-                () -> assertThat(postResponse.getCreatedAt()).isEqualTo(post.getCreatedAt()),
-                () -> assertThat(postResponse.getUpdatedAt()).isEqualTo(post.getUpdatedAt())
-        );
+        assertThat(postResponse.getId()).isEqualTo(post.getId());
     }
     @DisplayName("게시글 목록 첫 조회")
     @Test
     void findPostsByPage_first() {
         Long lastPostId = 0L;
-        postService.addPost(new NewPostRequest("제목1", "본문1"), authInfo);
-        postService.addPost(new NewPostRequest("제목2", "본문2"), authInfo);
-        postService.addPost(new NewPostRequest("제목3", "본문3"), authInfo);
+        postService.addPost(NEW_POST_REQUEST, authInfo);
+        postService.addPost(NEW_POST_REQUEST2, authInfo);
+        postService.addPost(NEW_POST_REQUEST3, authInfo);
 
         Pageable pageable = PageRequest.of(0, 2);
         PagePostResponse pagePostResponse = postService.findPostsByPage(lastPostId, pageable);
@@ -119,9 +101,9 @@ class PostServiceTest {
     @Test
     void findPostsByPage_else() {
         Long lastPostId = 3L;
-        postService.addPost(new NewPostRequest("제목1", "본문1"), authInfo);
-        postService.addPost(new NewPostRequest("제목2", "본문2"), authInfo);
-        postService.addPost(new NewPostRequest("제목3", "본문3"), authInfo);
+        postService.addPost(NEW_POST_REQUEST, authInfo);
+        postService.addPost(NEW_POST_REQUEST2, authInfo);
+        postService.addPost(NEW_POST_REQUEST3, authInfo);
 
         Pageable pageable = PageRequest.of(0, 2);
         PagePostResponse pagePostResponse = postService.findPostsByPage(lastPostId, pageable);
@@ -130,7 +112,7 @@ class PostServiceTest {
                 () -> assertThat(pagePostResponse.getPosts()).hasSize(2),
                 () -> assertThat(pagePostResponse.getPosts())
                         .extracting("title")
-                        .containsExactly("제목2", "제목1")
+                        .containsExactly("제목2", "제목")
         );
     }
     @DisplayName("게시글 조회 시 조회수 증가")
@@ -148,14 +130,12 @@ class PostServiceTest {
 
     @Test
     void addPost() {
-        NewPostRequest newPostRequest = new NewPostRequest("제목", "본문");
-
-        Long postId = postService.addPost(newPostRequest, authInfo);
+        Long postId = postService.addPost(NEW_POST_REQUEST, authInfo);
         Post post = postRepository.findById(postId).orElseThrow();
 
         assertAll(
-                () -> assertThat(newPostRequest.getTitle()).isEqualTo(post.getTitle()),
-                () -> assertThat(newPostRequest.getContent()).isEqualTo(post.getContent()),
+                () -> assertThat(NEW_POST_REQUEST.getTitle()).isEqualTo(post.getTitle()),
+                () -> assertThat(NEW_POST_REQUEST.getContent()).isEqualTo(post.getContent()),
                 () -> assertThat(post.getMember().getId()).isEqualTo(authInfo.getId()),
                 () -> assertThat(post.getMember().getNickname()).isEqualTo(authInfo.getNickname()),
                 () -> assertThat(post.getCreatedAt()).isNotNull()

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 public class PostResponse {
@@ -50,4 +51,5 @@ public class PostResponse {
                 .updatedAt(post.getUpdatedAt())
                 .build();
     }
+
 }
