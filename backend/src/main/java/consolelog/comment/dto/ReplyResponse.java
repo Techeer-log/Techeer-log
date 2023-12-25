@@ -11,16 +11,18 @@ public class ReplyResponse {
     private final Long parentId;
     private final Long id;
     private final String nickname;
+    private final String profileImageUrl;
     private final String content;
     private final LocalDateTime createdAt;
     private final int likeCount;
     private final boolean like;
 
-    public ReplyResponse(Long parentId, Long Id, String nickname, String content, LocalDateTime createdAt,
+    public ReplyResponse(Long parentId, Long Id, String nickname, String profileImageUrl, String content, LocalDateTime createdAt,
                          int likeCount, boolean like) {
         this.parentId = parentId;
         this.id = Id;
         this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
         this.content = content;
         this.createdAt = createdAt;
         this.likeCount = likeCount;
@@ -29,7 +31,7 @@ public class ReplyResponse {
 
     public static ReplyResponse of(Comment reply, boolean like) {
         return new ReplyResponse(reply.getParent().getId(), reply.getId(), reply.getNickname(),
-                reply.getMessage(), reply.getCreatedAt(),
+                reply.getMember().getProfileImageUrl(), reply.getMessage(), reply.getCreatedAt(),
                 reply.getCommentLikesCount(), like);
     }
 }

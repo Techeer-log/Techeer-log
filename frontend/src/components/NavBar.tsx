@@ -1,15 +1,14 @@
 import styled from "styled-components";
 import logo from "../assets/logo.png";
-import moon from "../assets/Moon.png";
-import magnifyingglass from "../assets/MagnifyingGlass.png";
-import miniprofile from "../assets/MiniProfile.png";
 import underpolygon from "../assets/UnderTri.png";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import LoginModal from "../components/LoginModal";
-import { isLoggedInSelector,  } from "../states/Atom";
-import { useState } from "react";
+import { accessTokenState, isLoggedInSelector } from "../states/Atom";
+import { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
+import { motion } from "framer-motion";
+import axios from "axios";
 
 const Background = styled.div`
   width: 100vw;
@@ -21,12 +20,12 @@ const Background = styled.div`
   top: 20px;
 `;
 
-const Logo = styled.img`
+const Logo = styled(motion.img)`
   width: 28px;
   height: 28px;
 `;
 
-const Title = styled.p`
+const Title = styled(motion.p)`
   display: flex;
   width: 130px;
   height: 25px;
@@ -42,16 +41,7 @@ const Title = styled.p`
   line-height: normal;
 `;
 
-const Theme = styled.img`
-  width: 28px;
-  height: 28px;
-`;
-
-const Search = styled.img`
-  width: 28px;
-  height: 28px;
-`;
-const WriteButton = styled.button`
+const WriteButton = styled(motion.button)`
   width: 111px;
   height: 41px;
   border-radius: 20px;
@@ -63,10 +53,10 @@ const WriteButton = styled.button`
   background: transparent;
 `;
 
-const Button = styled.div`
+const Button = styled(motion.div)`
   display: flex;
   width: 97px;
-  height: 25px;
+  height: 41px;
   flex-direction: column;
   justify-content: center;
   color: #ececec;
@@ -83,6 +73,7 @@ const MiniProfile = styled.img`
   height: 41px;
   border-radius: 41px;
   background: lightgray 50% / cover no-repeat;
+  cursor: pointer;
   /* margin-right: 10%; */
 `;
 
@@ -91,6 +82,7 @@ const Menu = styled.img`
   height: 8px;
   fill: #acacac;
   margin-top: 25%;
+  cursor: pointer;
   /* margin-bottom: 25%; */
 `;
 
@@ -119,9 +111,11 @@ const ModalWrapper = styled.div`
 `;
 
 function NavBar() {
-  const[showDropdown, setshowDropdown] = useState(false);
+  const [showDropdown, setshowDropdown] = useState(false);
   const isLoggedIn = useRecoilValue(isLoggedInSelector);
   const [showLoginModal, setShowLoginModal] = useState(false); // 모달 보이기/감추기 상태
+  const [profileimg, setProfileImg] = useState("");
+  const accesstoken = useRecoilValue(accessTokenState);
 
   // 로그인 모달을 보여주는 함수
   const handleLoginClick = () => {
@@ -133,39 +127,76 @@ function NavBar() {
     setShowLoginModal(false);
   };
 
+  const getProfile = (): void => {
+    axios
+      .get("/api/v1/members/profile", {
+        headers: {
+          authorization: accesstoken,
+        },
+      })
+      .then((res) => {
+        setProfileImg(res.data.data.profileImageUrl);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      getProfile();
+    }
+  }, [isLoggedIn]);
 
   return (
     <Background>
       <Link to={"/"}>
         <Left>
-          <Logo src={logo} />
-          <Title>Console.log</Title>
+          <Logo
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 10 }}
+            src={logo}
+          />
+          <Title
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 10 }}
+          >
+            Console.log
+          </Title>
         </Left>
       </Link>
       <Right>
-        <Theme src={moon} />
-        <Search src={magnifyingglass} />
         {isLoggedIn ? (
           <>
-            <WriteButton>
+            <WriteButton whileHover={{ background: "#ececec " }}>
               <Link to={"/posting"}>
-                <Button>새 글 작성</Button>
+                <Button whileHover={{ color: "#121212" }}>새 글 작성</Button>
               </Link>
             </WriteButton>
-            <div style={{ display : "flex", gap:"1rem"}} onClick={()=>{setshowDropdown((prev)=>!prev)}}>
-              <MiniProfile src={miniprofile} />
+            <div
+              style={{ display: "flex", gap: "1rem" }}
+              onClick={() => {
+                setshowDropdown((prev) => !prev);
+              }}
+            >
+              <MiniProfile src={profileimg} />
               <Menu src={underpolygon} />
             </div>
-            {showDropdown && <Dropdown/>}
+            {showDropdown && <Dropdown />}
           </>
         ) : (
           <WriteButton onClick={handleLoginClick}>
-              <Button>로그인</Button>
+            <Button>로그인</Button>
           </WriteButton>
         )}
       </Right>
-      {showLoginModal && <ModalWrapper><LoginModal onClose={handleCloseModal} /></ModalWrapper>}
+      {showLoginModal && (
+        <ModalWrapper>
+          <LoginModal onClose={handleCloseModal} />
+        </ModalWrapper>
+      )}
     </Background>
   );
 }

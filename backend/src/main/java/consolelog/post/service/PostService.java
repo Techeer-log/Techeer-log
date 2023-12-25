@@ -89,6 +89,7 @@ public class PostService {
         return Post.builder()
                 .title(newPostRequest.getTitle())
                 .content(newPostRequest.getContent())
+                .mainImageUrl(newPostRequest.getMainImageUrl())
                 .member(member)
                 .build();
     }
@@ -99,6 +100,7 @@ public class PostService {
         validateOwner(authInfo, post);
         post.updateTitle(postUpdateRequest.getTitle());
         post.updateContent(postUpdateRequest.getContent());
+        post.setMainImageUrl(postUpdateRequest.getMainImageUrl());
         return PostResponse.from(post);
     }
 

@@ -7,6 +7,8 @@ import consolelog.global.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -32,6 +34,11 @@ public class Post extends BaseEntity {
     @Lob
     private String content;
 
+    @Column
+    @Getter
+    @Setter
+    private String mainImageUrl;
+
     private int viewCount = 0;
 
     private int likeCount = 0;
@@ -56,10 +63,11 @@ public class Post extends BaseEntity {
     }
 
     @Builder
-    public Post(String title, String content, Member member,
+    public Post(String title, String content, String mainImageUrl, Member member,
                 List<Comment> comments, List<PostLike> postLikes) {
         this.title = title;
         this.content = content;
+        this.mainImageUrl = mainImageUrl;
         this.member = member;
         this.comments = comments;
         this.postLikes = postLikes;

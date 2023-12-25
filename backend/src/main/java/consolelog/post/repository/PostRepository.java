@@ -39,7 +39,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "update Post SET like_count = like_count - 1 WHERE post_id = :postId", nativeQuery = true)
+    @Query(value = "UPDATE post SET like_count = like_count - 1 WHERE post_id = :postId", nativeQuery = true)
     void decreaseLikeCount(@Param("postId") Long postId);
 
     @Transactional

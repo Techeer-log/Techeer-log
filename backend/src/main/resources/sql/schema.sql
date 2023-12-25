@@ -30,6 +30,7 @@ CREATE TABLE post
     updated_at datetime                 NULL,
     title      VARCHAR(255)             NOT NULL,
     content    LONGTEXT                 NOT NULL,
+    main_image_url VARCHAR(255)         NULL,
     view_count INT                      NOT NULL,
     like_count INT                      NOT NULL,
     deleted    BIT(1)                   NULL,

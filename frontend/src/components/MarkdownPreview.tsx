@@ -23,28 +23,14 @@ const MarkdownPreview = ({ markdown }: { markdown: string }) => {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            code({ node, inline, className, children, ...props }) {
+            code({ className, children }) {
               const match = /language-(\w+)/.exec(className || "");
-              return inline ? (
-                // 강조 (``)
-                <code
-                  style={{
-                    background:
-                      "linear-gradient( to right, #ececec 15%, #e66c6c 85%, #f50404 )",
-                    padding: "2px",
-                    borderRadius: "3px",
-                  }}
-                  {...props}
-                >
-                  {children}
-                </code>
-              ) : match ? (
+              return match ? (
                 // 코드 (```)
                 <SyntaxHighlighter
                   style={nord}
                   language={match[1]}
                   PreTag="div"
-                  {...props}
                 >
                   {String(children)
                     .replace(/\n$/, "")
@@ -57,16 +43,15 @@ const MarkdownPreview = ({ markdown }: { markdown: string }) => {
                   background="green"
                   language="textile"
                   PreTag="div"
-                  {...props}
                 >
                   {String(children).replace(/\n$/, "")}
                 </SyntaxHighlighter>
               );
             },
             // 인용문 (>)
-            blockquote({ node, children, ...props }) {
+            blockquote({ children, ...props }) {
               return (
-                <div
+                <blockquote
                   style={{
                     background: "#7afca19b",
                     padding: "1px 15px",
@@ -75,19 +60,19 @@ const MarkdownPreview = ({ markdown }: { markdown: string }) => {
                   {...props}
                 >
                   {children}
-                </div>
+                </blockquote>
               );
             },
-            img({ node, ...props }) {
+            img({ ...props }) {
               return (
                 <img
-                  style={{ maxWidth: "60vw" }}
-                  src={props.src.replace("../../../../public/", "/")}
+                  style={{ maxWidth: "40vw" }}
+                  src={props.src?.replace("../../../../public/", "/")}
                   alt="MarkdownRenderer__Image"
                 />
               );
             },
-            em({ node, children, ...props }) {
+            em({ children, ...props }) {
               return (
                 <span style={{ fontStyle: "italic" }} {...props}>
                   {children}

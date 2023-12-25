@@ -12,6 +12,7 @@ public class CommentResponse {
 
     private final Long commentId;
     private final String nickname;
+    private final String profileImageUrl;
     private final String content;
     private final LocalDateTime createdAt;
     private final int likeCount;
@@ -20,12 +21,13 @@ public class CommentResponse {
 
 
     public CommentResponse(Long commentId, String nickname, String content, LocalDateTime createdAt,
-                           boolean authorized, int likeCount, boolean like,
+                           boolean authorized, String profileImageUrl, int likeCount, boolean like,
                            List<ReplyResponse> replies) {
         this.commentId = commentId;
         this.nickname = nickname;
         this.content = content;
         this.createdAt = createdAt;
+        this.profileImageUrl = profileImageUrl;
         this.likeCount = likeCount;
         this.like = like;
         this.replies = replies;
@@ -35,12 +37,12 @@ public class CommentResponse {
                                      boolean isLike) {
         return new CommentResponse(comment.getId(), comment.getNickname(), comment.getMessage(),
                 comment.getCreatedAt(), comment.isAuthorized(accessMemberId),
-                comment.getCommentLikesCount(), isLike, replyResponses);
+                comment.getMember().getProfileImageUrl(), comment.getCommentLikesCount(), isLike, replyResponses);
     }
 
     public static CommentResponse softRemovedOf(Comment comment, List<ReplyResponse> replyResponses) {
         return new CommentResponse(comment.getId(), "", null, null, false,
-                0, false, replyResponses);
+                comment.getMember().getProfileImageUrl(), 0, false, replyResponses);
     }
 
 

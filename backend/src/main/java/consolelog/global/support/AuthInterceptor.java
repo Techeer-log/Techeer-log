@@ -42,7 +42,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         if (notExistHeader(request)) {
 //            LOGGER.info("no header" + request.getRequestURI());
-            throw new InvalidAccessTokenException();
+            throw new RuntimeException();
         }
 
         String token = AuthorizationExtractor.extractAccessToken(request);

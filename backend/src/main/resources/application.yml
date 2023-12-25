@@ -4,6 +4,10 @@ spring:
     - dev
     - secret
 
+# logging 경로 지정
+logging:
+  config: classpath:log4j2.xml
+
 
 
 

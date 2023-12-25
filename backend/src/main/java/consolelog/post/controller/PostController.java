@@ -39,7 +39,7 @@ public class PostController {
     @Operation(summary = "게시글 조회", description = "게시글 조회")
     @GetMapping("/posts/{id}")
     public ResponseEntity<ResultResponse<PostResponse>> findPost(@Parameter(name = "id", description = "posts 의 id", in = ParameterIn.PATH) @PathVariable Long id,
-                                                                  @Parameter(name = "postLog", description = "post 의 log", in = ParameterIn.COOKIE) @CookieValue(value = "viewedPost", required = false, defaultValue = "") String postLog) {
+                                                                  @Parameter(name = "postLogCookie", description = "post 의 log", in = ParameterIn.COOKIE) @CookieValue(value = "viewedPost", required = false, defaultValue = "") String postLog) {
         PostResponse findPostResponse = postService.findPost(id, postLog);
         String updatedLog = postService.updatePostLog(id, postLog);
         ResponseCookie responseCookie = ResponseCookie.from("viewedPost", updatedLog).maxAge(86400L).build();

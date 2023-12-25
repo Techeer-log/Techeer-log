@@ -3,8 +3,15 @@ import { useState, ChangeEvent, useRef, useEffect } from "react";
 import MarkdownPreview from "../components/MarkdownPreview";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { accessTokenState, editDetail, editTitle } from "../states/Atom";
-import { useRecoilValue } from "recoil";
+import {
+  Details,
+  PostId,
+  Titles,
+  accessTokenState,
+  editDetail,
+  editTitle,
+} from "../states/Atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const Background = styled.div`
   width: 100vw;
@@ -209,7 +216,10 @@ function EditPage() {
   const [markdown, setMarkdown] = useState(editingDetail);
   const [title, setTitle] = useState(editingTitle);
   const accesstoken = useRecoilValue(accessTokenState);
+  const setTitles = useSetRecoilState(Titles);
+  const setDetails = useSetRecoilState(Details);
   const { postId } = useParams();
+  const setPostId = useSetRecoilState(PostId);
 
   const formData = new FormData();
 
@@ -292,29 +302,12 @@ function EditPage() {
   const handleButtonQuoteChange = () => {
     setMarkdown(markdown + "\n" + "> ");
   };
-  const handleSubmit = async (): Promise<void> => {
-    try {
-      const response = await axios.put(
-        `/api/v1/posts/${postId}`,
-        {
-          title,
-          content: markdown,
-        },
-        {
-          headers: {
-            authorization: accesstoken,
-          },
-        }
-      );
-      console.log(response.data);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const onSubmit = async () => {
     try {
-      await handleSubmit();
+      setTitles(title);
+      setDetails(markdown);
+      setPostId(postId);
+      navigate("/writingedit");
     } catch (error) {
       console.log(error);
     }

@@ -3,8 +3,9 @@ import { useState, ChangeEvent, useRef, useEffect } from "react";
 import MarkdownPreview from "../components/MarkdownPreview";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { accessTokenState } from "../states/Atom";
-import { useRecoilValue } from "recoil";
+import { Details, Titles, accessTokenState } from "../states/Atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { motion } from "framer-motion";
 
 const Background = styled.div`
   width: 100vw;
@@ -56,7 +57,6 @@ const Underbar = styled.div`
   border-radius: 1px;
 `;
 
-
 const Buttons = styled.div`
   display: flex;
   align-items: center;
@@ -70,7 +70,7 @@ const Buttons = styled.div`
   width: auto;
 `;
 
-const Scale = styled.button`
+const Scale = styled(motion.button)`
   width: 3rem;
   height: 3rem;
   display: flex;
@@ -155,13 +155,11 @@ const TempSaveBtn = styled.button`
   padding: 0px 1.25rem;
 `;
 */
-const SaveBtn = styled.button`
+const SaveBtn = styled(motion.button)`
   height: 2.5rem;
   font-size: 1.125rem;
   display: inline-flex;
-  -webkit-box-align: center;
   align-items: center;
-  -webkit-box-pack: center;
   justify-content: center;
   font-weight: bold;
   cursor: pointer;
@@ -208,6 +206,8 @@ function PostingPage() {
   const [markdown, setMarkdown] = useState("");
   const [title, setTitle] = useState("");
   const accesstoken = useRecoilValue(accessTokenState);
+  const setTitles = useSetRecoilState(Titles);
+  const setDetails = useSetRecoilState(Details);
 
   const formData = new FormData();
 
@@ -280,7 +280,7 @@ function PostingPage() {
           setMarkdown(markdown + `![](${response.data.data})`);
           setSelectedImage(null);
         } catch (error) {
-          console.log(error);
+          alert("더 작은 용량의 이미지를 업로드해주세요!");
         }
       }
     };
@@ -290,29 +290,11 @@ function PostingPage() {
   const handleButtonQuoteChange = () => {
     setMarkdown(markdown + "\n" + "> ");
   };
-  const handleSubmit = async (): Promise<void> => {
-    try {
-      const response = await axios.post(
-        "api/v1/posts",
-        {
-          title,
-          content: markdown,
-        },
-        {
-          headers: {
-            authorization: accesstoken,
-          },
-        }
-      );
-      console.log(response.data);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const onSubmit = async () => {
     try {
-      await handleSubmit();
+      setTitles(title);
+      setDetails(markdown);
+      navigate("/writing");
     } catch (error) {
       console.log(error);
     }
@@ -485,7 +467,9 @@ function PostingPage() {
             </span>
           </BackButton>
           <div>
-            <SaveBtn onClick={onSubmit}>출간하기</SaveBtn>
+            <SaveBtn whileHover={{ background: "#63E6BE" }} onClick={onSubmit}>
+              출간하기
+            </SaveBtn>
           </div>
         </UnderBox>
       </LeftBox>

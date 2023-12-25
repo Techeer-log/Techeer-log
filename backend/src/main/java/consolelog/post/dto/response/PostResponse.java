@@ -12,7 +12,9 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
+    private String mainImageUrl;
     private String nickname;
+    private String profileImageUrl;
     private int likeCount;
     private int viewCount;
     private int commentCount;
@@ -23,13 +25,15 @@ public class PostResponse {
     }
 
     @Builder
-    private PostResponse(Long id, String title, String content, String nickname,
-                         int likeCount, int viewCount, int commentCount,
+    private PostResponse(Long id, String title, String content, String mainImageUrl, String nickname,
+                         String profileImageUrl, int likeCount, int viewCount, int commentCount,
                          LocalDateTime createdAt, LocalDateTime updatedAt) { //생성자 주입, 초기화
         this.id = id;
         this.title = title;
         this.content = content;
+        this.mainImageUrl = mainImageUrl;
         this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
         this.likeCount = likeCount;
         this.viewCount = viewCount;
         this.commentCount = commentCount;
@@ -43,7 +47,9 @@ public class PostResponse {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .mainImageUrl(post.getMainImageUrl())
                 .nickname(post.getMember().getNickname())
+                .profileImageUrl(post.getMember().getProfileImageUrl())
                 .viewCount(post.getViewCount())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())

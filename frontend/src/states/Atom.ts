@@ -22,6 +22,21 @@ export const editDetail = atom({
   default: "",
 });
 
+export const Titles = atom({
+  key: "Titles",
+  default: "",
+});
+
+export const Details = atom({
+  key: "Details",
+  default: "",
+});
+
+export const PostId = atom<string | undefined>({
+  key: "PostId",
+  default: "",
+});
+
 export const isLoggedInSelector = selector({
   key: "isLoggedInSelector",
   get: ({ get }) => {
@@ -31,7 +46,13 @@ export const isLoggedInSelector = selector({
 });
 
 export const refreshTokenState = atom({
-  key: "refreshTokenState",
-  default: "",
-  effects_UNSTABLE: [persistAtom],
+  key: 'refreshTokenState',
+  default: '',
+  effects_UNSTABLE:[persistAtom],
 });
+
+export const profileImageUrl = atom({
+  key:'profileImageUrl',
+  default:'',
+  effects_UNSTABLE:[persistAtom],
+})

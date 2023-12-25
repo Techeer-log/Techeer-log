@@ -2,8 +2,9 @@ import axios from "axios";
 import { ChangeEvent, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { accessTokenState, refreshTokenState } from "../states/Atom";
+import { accessTokenState, profileImageUrl, refreshTokenState } from "../states/Atom";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Modal = styled.div`
   display: flex;
@@ -164,6 +165,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
   const setRefreshToken = useSetRecoilState(refreshTokenState);
   // const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState);
   const [error, setError] = useState("");
+  const setImageURL = useSetRecoilState(profileImageUrl);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {
@@ -180,7 +182,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
   const handleLogIn = async () => {
     try {
       await axios
-        .post("api/v1/auth/login", {
+        .post("/api/v1/auth/login", {
           loginId,
           password,
         })
@@ -191,16 +193,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
 
             setAccessToken(accessToken);
             setRefreshToken(refreshToken);
-            console.log(accessToken);
 
-            // localStorage.setItem('accessToken', accessToken);
-            // localStorage.setItem('refreshToken', refreshToken);
+            getProfile(accessToken);
+
+            Toast.fire({
+              icon: 'success',
+              title: '로그인 성공!'
+            });
           }
         });
     } catch (error) {
-      console.log(error);
-      setError("아이디와 비밀번호를 확인하세요.");
-    } finally {
+      // console.log(error.data.message);
+
+      Toast.fire({
+        icon: 'error',
+        title: '아이디 또는 비밀번호를 확인하세요.'
+    })
+        
+    } finally {      
       setLoading(false);
     }
   };
@@ -223,6 +233,35 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
       setLoading(false);
     }
   };
+
+  //이미지 url 받아오기
+  const getProfile = (accessToken:string): void => {
+    axios
+      .get("/api/v1/members/profile", {
+        headers: {
+          authorization: accessToken,
+        },
+      })
+      .then((res) => {
+        setImageURL(res.data.data.profileImageUrl);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  });
+
 
   return (
     <Modal>

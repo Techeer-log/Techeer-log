@@ -2,7 +2,6 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Main from "./pages/MainPage";
 import { theme } from "./theme";
-import Test from "./pages/Test";
 import SignUp from "./pages/SignUp";
 
 import BoardPage from "./pages/BoardPage";
@@ -10,6 +9,8 @@ import MyPage from "./pages/Mypage";
 import PostingPage from "./pages/PostingPage";
 import { RecoilRoot } from "recoil";
 import EditPage from "./pages/EditPage";
+import WritingPage from "./pages/WritingPage";
+import WritingEditPage from "./pages/WritingEditPage";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@1,8..60,300&display=swap');
@@ -67,6 +68,7 @@ body {
   background-color:${(props) => props.theme.bgColor};
   color:black;
   line-height: 1.2;
+  overflow-x: hidden;
 }
 a {
   text-decoration:none;
@@ -75,14 +77,6 @@ a {
 `;
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Main />,
-  },
-  {
-    path: "/test",
-    element: <Test />,
-  },
   {
     path: "/signup",
     element: <SignUp />,
@@ -102,6 +96,18 @@ const router = createBrowserRouter([
   {
     path: "/board/:postId",
     element: <BoardPage />,
+  },
+  {
+    path: "/writing",
+    element: <WritingPage />,
+  },
+  {
+    path: "/writingedit",
+    element: <WritingEditPage />,
+  },
+  {
+    path: "/",
+    element: <Main />,
   },
 ]);
 function App() {
