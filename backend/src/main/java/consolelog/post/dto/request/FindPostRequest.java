@@ -7,7 +7,6 @@ import lombok.Getter;
 public class FindPostRequest {
     @NotBlank(message = "게시글 id를 입력해주세요")
     private Long id;
-//    private String title;
 
     public FindPostRequest(Long id) {
         this.id = id;

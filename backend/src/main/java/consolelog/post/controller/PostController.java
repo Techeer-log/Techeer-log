@@ -5,16 +5,14 @@ import consolelog.global.result.ResultResponse;
 import consolelog.global.support.token.Login;
 import consolelog.post.dto.request.NewPostRequest;
 import consolelog.post.dto.request.PostUpdateRequest;
-import consolelog.post.dto.response.PostResponse;
 import consolelog.post.dto.response.PagePostResponse;
+import consolelog.post.dto.response.PostResponse;
 import consolelog.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -23,10 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-
 import static consolelog.global.result.ResultCode.*;
 
-@Tag(name = "Post", description = "Post API Document")
 @RestController
 @RequestMapping("/v1")
 public class PostController {

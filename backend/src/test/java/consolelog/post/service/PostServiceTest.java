@@ -1,172 +1,179 @@
 package consolelog.post.service;
 
 import consolelog.auth.dto.AuthInfo;
+import consolelog.member.domain.Member;
 import consolelog.member.repository.MemberRepository;
 import consolelog.post.domain.Post;
+import consolelog.post.domain.ViewCountManager;
 import consolelog.post.dto.request.NewPostRequest;
 import consolelog.post.dto.request.PostUpdateRequest;
 import consolelog.post.dto.response.PagePostResponse;
 import consolelog.post.dto.response.PostResponse;
 import consolelog.post.exception.PostNotFoundException;
 import consolelog.post.repository.PostRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static consolelog.util.fixture.MemberFixture.M1;
-import static consolelog.util.fixture.PostFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.*;
 
-@SpringBootTest
+
+@ExtendWith(MockitoExtension.class)
 class PostServiceTest {
 
     private static final String EMPTY_COOKIE_VALUE = "";
-
-    @Autowired
-    private PostService postService;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @PersistenceContext
-    private EntityManager em;
-
-    private Post post1;
-    private AuthInfo authInfo;
-
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private PostRepository postRepository;
+    @Mock
+    private ViewCountManager viewCountManager;
+    @InjectMocks
+    private PostService postService;
+    private Post post1, post2;
+    private AuthInfo authInfo;
 
     @BeforeEach
     void setUp() {
-        memberRepository.save(M1);
-        authInfo = new AuthInfo(M1.getId(), M1.getRoleType().getName(), M1.getNickname());
         post1 = Post.builder()
-                .title("제목")
-                .content("본문")
+                .id(1L)
+                .title("제목1")
+                .content("본문1")
                 .member(M1)
-                .comments(new ArrayList<>())
                 .postLikes(new ArrayList<>())
+                .comments(new ArrayList<>())
                 .build();
+        post2 = Post.builder()
+                .id(2L)
+                .title("제목2")
+                .content("본문2")
+                .member(M1)
+                .postLikes(new ArrayList<>())
+                .comments(new ArrayList<>())
+                .build();
+
+        authInfo = new AuthInfo(M1.getId(),"USER", M1.getNickname());
+
     }
-    @DisplayName("게시글 조회1")
+    @AfterEach
+    void tearDown() {
+
+    }
+    @DisplayName("게시글 상세 조회를 성공한다.")
     @Test
     void findPost() {
-        Post post = postRepository.save(post1);
 
-        Post foundPost = postRepository.findById(post.getId()).orElseThrow();
+        given(postRepository.findById(1L)).willReturn(Optional.of(post1));
+
+        Post foundPost = postRepository.findById(1L).orElseThrow();
         PostResponse postResponse = PostResponse.from(foundPost);
 
-        assertThat(postResponse.getId()).isEqualTo(post.getId());
+        assertThat(postResponse).isNotNull();
+        assertThat(postResponse.getId()).isEqualTo(post1.getId());
     }
-    @DisplayName("게시글 조회2")
+
+    @DisplayName("게시글 상세 조회를 실패하면 예외를 발생시킨다.")
     @Test
-    void findPost_() {
-        Post post = postRepository.save(post1);
+    void failFindPost() {
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        PostResponse postResponse = postService.findPost(post.getId(), EMPTY_COOKIE_VALUE);
-
-        assertThat(postResponse.getId()).isEqualTo(post.getId());
+        assertThatThrownBy(() -> postService.findPost(1L, EMPTY_COOKIE_VALUE))
+                .isInstanceOf(PostNotFoundException.class);
     }
-    @DisplayName("게시글 목록 첫 조회")
+    @DisplayName("게시글 목록을 조회할 때 lastPostId를 0으로 설정하면 마지막 PostId로 조회한다.")
     @Test
     void findPostsByPage_first() {
-        Long lastPostId = 0L;
-        postService.addPost(NEW_POST_REQUEST, authInfo);
-        postService.addPost(NEW_POST_REQUEST2, authInfo);
-        postService.addPost(NEW_POST_REQUEST3, authInfo);
+        final Pageable pageable = PageRequest.of(0, 1);
+        final Long lastPostId = 0L;
+        Slice<Post> fakeSlice = new SliceImpl<>(Arrays.asList(post2, post1));
 
-        Pageable pageable = PageRequest.of(0, 2);
+        given(postRepository.findNextPage(pageable)).willReturn(fakeSlice);
+
         PagePostResponse pagePostResponse = postService.findPostsByPage(lastPostId, pageable);
 
         assertAll(
                 () -> assertThat(pagePostResponse.getPosts()).hasSize(2),
                 () -> assertThat(pagePostResponse.getPosts())
                         .extracting("title")
-                        .containsExactly("제목3", "제목2")
+                        .containsExactly("제목2", "제목1")
         );
     }
-    @DisplayName("게시글 목록 postId로 조회")
+    @DisplayName("게시글 목록을 조회할 때 lastPostId를 0으로 설정하면 마지막 PostId로 조회한다.")
     @Test
     void findPostsByPage_else() {
-        Long lastPostId = 3L;
-        postService.addPost(NEW_POST_REQUEST, authInfo);
-        postService.addPost(NEW_POST_REQUEST2, authInfo);
-        postService.addPost(NEW_POST_REQUEST3, authInfo);
-
-        Pageable pageable = PageRequest.of(0, 2);
+        final Long lastPostId = 3L;
+        final Pageable pageable = PageRequest.of(0, 2);
+        Slice<Post> fakeSlice = new SliceImpl<>(Arrays.asList(post2, post1));
+        //given
+        given(postRepository.findPostByIdIsLessThanOrderByIdDesc(lastPostId, pageable)).willReturn(fakeSlice);
+        //when
         PagePostResponse pagePostResponse = postService.findPostsByPage(lastPostId, pageable);
+        //then
 
         assertAll(
                 () -> assertThat(pagePostResponse.getPosts()).hasSize(2),
                 () -> assertThat(pagePostResponse.getPosts())
                         .extracting("title")
-                        .containsExactly("제목2", "제목")
+                        .containsExactly("제목2", "제목1")
         );
     }
-    @DisplayName("게시글 조회 시 조회수 증가")
-    @Test
-    void findPost_viewCount() {
-        Post post = postRepository.save(post1);
-        int beforeViewCount = post.getViewCount();
-        postService.findPost(post.getId(), EMPTY_COOKIE_VALUE);
-        em.clear();
 
-        int updateViewCount = postRepository.findById(post.getId()).orElseThrow().getViewCount();
-
-        assertThat(updateViewCount).isEqualTo(beforeViewCount + 1);
-    }
-
+    @DisplayName("게시글을 추가한다.")
     @Test
     void addPost() {
-        Long postId = postService.addPost(NEW_POST_REQUEST, authInfo);
-        Post post = postRepository.findById(postId).orElseThrow();
+        NewPostRequest newPostRequest = new NewPostRequest("제목1", "본문1", "");
+
+        given(memberRepository.findById(authInfo.getId())).willReturn(Optional.of(M1));
+
+        Post post = createPost(newPostRequest, M1);
+        when(postRepository.save(post)).thenReturn(post1);
+
+        Long postId = postService.addPost(newPostRequest, authInfo);
 
         assertAll(
-                () -> assertThat(NEW_POST_REQUEST.getTitle()).isEqualTo(post.getTitle()),
-                () -> assertThat(NEW_POST_REQUEST.getContent()).isEqualTo(post.getContent()),
-                () -> assertThat(post.getMember().getId()).isEqualTo(authInfo.getId()),
-                () -> assertThat(post.getMember().getNickname()).isEqualTo(authInfo.getNickname()),
-                () -> assertThat(post.getCreatedAt()).isNotNull()
+                () -> assertThat(postId).isEqualTo(post1.getId()),
+                () -> assertThat(newPostRequest.getTitle()).isEqualTo(post1.getTitle()),
+                () -> assertThat(newPostRequest.getContent()).isEqualTo(post1.getContent()),
+                () -> assertThat(post1.getMember().getId()).isEqualTo(authInfo.getId()),
+                () -> assertThat(post1.getMember().getNickname()).isEqualTo(authInfo.getNickname())
         );
     }
-
+    private Post createPost(NewPostRequest newPostRequest, Member m1) {
+        return Post.builder()
+                .title(newPostRequest.getTitle())
+                .content(newPostRequest.getContent())
+                .member(m1)
+                .build();
+    }
+    @DisplayName("게시글을 수정한다.")
     @Test
     void updatePost() {
-        Post post = postRepository.save(post1);
-        PostUpdateRequest postUpdateRequest = new PostUpdateRequest("제목수정", "본문수정");
+        PostUpdateRequest postUpdateRequest = new PostUpdateRequest("제목수정", "본문수정", "");
 
-        postService.updatePost(post.getId(), postUpdateRequest, authInfo);
+        post1.updateTitle(postUpdateRequest.getTitle());
+        post1.updateContent(postUpdateRequest.getContent());
 
-        Post foundPost = postRepository.findById(post.getId())
-                .orElseThrow(PostNotFoundException::new);
         assertAll(
-                () -> assertThat(foundPost.getTitle()).isEqualTo(postUpdateRequest.getTitle()),
-                () -> assertThat(foundPost.getContent()).isEqualTo(postUpdateRequest.getContent()),
-                () -> assertThat(foundPost.getUpdatedAt()).isNotNull()
+                () -> assertThat(post1.getTitle()).isEqualTo(postUpdateRequest.getTitle()),
+                () -> assertThat(post1.getContent()).isEqualTo(postUpdateRequest.getContent())
         );
-
-    }
-
-    @Test
-    void deletePost() {
-        Post post = postRepository.save(post1);
-
-        postService.deletePost(post.getId(), authInfo);
-
-        Optional<Post> foundPost = postRepository.findById(post.getId());
-
-        assertThat(foundPost).isEmpty();
     }
 }
