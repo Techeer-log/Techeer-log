@@ -50,7 +50,11 @@ cloud:
     region:
       static: ${REGION}
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
 
 
 #logging:
