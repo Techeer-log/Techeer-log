@@ -16,7 +16,7 @@ export const getBootCampProject = async ({
     sortDirection: 'ASC',
   };
 
-  const response = await axiosInstance.get(`/api/v1/projects/list`, {
+  const response = await axiosInstance.get(`/api/v1/projects/bootcamp`, {
     params,
   });
 
