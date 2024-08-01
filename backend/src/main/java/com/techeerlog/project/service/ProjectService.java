@@ -303,9 +303,7 @@ public class ProjectService {
         }
     }
 
-    public ProjectItemListResponse findSortedProjectListResponse(ProjectListRequest projectListRequest, AuthInfo authInfo) {
-        int year = 2024;
-        SemesterEnum semester = SemesterEnum.SECOND;
+    public ProjectItemListResponse findSortedProjectListResponse(ProjectListRequest projectListRequest, int year, SemesterEnum semester, AuthInfo authInfo) {
         Slice<Project> sortedProjectSlice = getSortedProjectSlice(projectListRequest, year, semester);
         return projectListToProjectItemListResponse(sortedProjectSlice, authInfo);
     }
