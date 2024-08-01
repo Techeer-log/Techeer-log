@@ -28,7 +28,7 @@ export function Search({ setResult }: any) {
     }
     searchMutation.mutate();
   }, [searchQuery]);
-  console.log(searchresult);
+
   const onChangeSearch = (e: any) => {
     setSearchresult(e.target.value);
   };

@@ -1,14 +1,26 @@
 import { Project } from '../types/projectList.ts';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 interface propsProjects {
   project: Project;
 }
 export default function ProjectCard({ project }: propsProjects) {
   const firstFrontend = project.frameworkResponseList.find((framework) => framework.frameworkTypeEnum === 'FRONTEND');
   const firstBackend = project.frameworkResponseList.find((framework) => framework.frameworkTypeEnum === 'BACKEND');
+  const teamName = project.projectTeamNameEnum;
+
+  const { param } = useParams();
+  const moveProjectView =
+    param === 'judge' ? `/2024-summer-bootcamp/project/${project.id}` : `/projectview/${project.id}`;
 
   return (
-    <Link to={`/projectview/${project.id}`}>
+    <Link to={moveProjectView}>
+      {param === 'judge' ? (
+        <div className="w-[100%] font-['Pre-S'] bg-[#2e2e2e70] text-center rounded-[0.1rem] border-solid border-[0.1rem] border-[#444444] font-semibold text-[1.7rem] text-[#EEEEEE] p-[0.3rem] mt-[2rem] mb-[0.5rem]">
+          {teamName}팀
+        </div>
+      ) : (
+        <></>
+      )}
       <div
         key={project.id}
         className="rounded-[0.3rem] border-solid border border-[#444444] flex flex-col p-[0_0_1rem_0] box-sizing-border w-[100%] cursor-pointer"
@@ -48,7 +60,6 @@ export default function ProjectCard({ project }: propsProjects) {
         </div>
         <div className="m-[0_1rem_0_1rem] flex flex-row justify-between w-[92%] box-sizing-border">
           <p className="m-[0_0.5rem_0_0] break-words font-['Pre-R'] font-normal text-[0.8rem] text-[#B0B0B0]">
-            {/*<span className="container-17-sub-10"></span>*/}
             {project.projectStatusEnum === 'RUNNING' ? (
               <>
                 <span className="text-[1.2rem] text-green-400">•</span>

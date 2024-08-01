@@ -66,6 +66,7 @@ export const ProjectList = ({ selectedType, selectedYear, selectedPeriod }: Proj
   if (isFetching && !isFetchingNextPage) {
     return <div className="w-full h-full bg-transparent">Loading...</div>;
   }
+
   return (
     <div className="grid grid-rows-3 grid-cols-3 gap-4 m-4">
       {projects && projects.length > 0 ? (

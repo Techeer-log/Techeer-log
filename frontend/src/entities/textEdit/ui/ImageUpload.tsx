@@ -9,10 +9,9 @@ export const ImageUpload = ({ setImageurl }: any) => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
-    console.log(files);
 
     if (files && files.length === 1) {
-      console.log(files[0]);
+      // console.log(files[0]);
       uploadImageMutation.mutate(files[0]);
     }
   };

@@ -51,6 +51,7 @@ export interface ProjectData {
   viewCount: number;
   loveCount: number;
   writer: Writer;
+  projectTeamNameEnum: string;
   projectMemberResponseList: ProjectMember[];
   nonRegisterProjectMemberResponseList: ProjectMember[];
   frameworkResponseList: Framework[];

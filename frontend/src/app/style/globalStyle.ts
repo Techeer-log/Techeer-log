@@ -103,5 +103,15 @@ strong {
       font-size: 12px;
     }
   }
+  @media (max-width: 1000px) , (max-height: 600px) {
+    html {
+      font-size: 10px;
+    }
+  }
+  @media (max-width: 800px) , (max-height: 500px) {
+    html {
+      font-size: 8.5px;
+    }
+  }
 }
 `;

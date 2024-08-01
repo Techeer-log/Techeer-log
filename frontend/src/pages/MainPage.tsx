@@ -78,6 +78,7 @@ export default function MainPage() {
               <EmblaCarousel options={OPTIONS} date={data} />
               <div ref={scrollRef}></div>
             </div>
+            {/*프로젝트 전체*/}
             <div className="flex flex-col items-center justify-center mb-12">
               <img src={iconPoint} className="w-[1.875rem] h-[0.75rem] mb-[1rem]" />
               <span className="font-['Pretendard-Thin'] text-[1.875rem] text-white">

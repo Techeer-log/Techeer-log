@@ -19,7 +19,6 @@ export const LikeButton = ({ projectId, loveCount, isLoved }: LikeData) => {
   const postMutation = useMutation({
     mutationFn: (projectId: number) => postLike(projectId),
     onSuccess: () => {
-      console.log('post완료');
       queryClient.invalidateQueries({ queryKey: ['projectData'] });
       //optimitic update적용 예정
     },
@@ -28,7 +27,6 @@ export const LikeButton = ({ projectId, loveCount, isLoved }: LikeData) => {
   const deleteMutation = useMutation({
     mutationFn: (projectId: number) => deleteLike(projectId),
     onSuccess: () => {
-      console.log('delete완료');
       queryClient.invalidateQueries({ queryKey: ['projectData'] });
     },
   });
