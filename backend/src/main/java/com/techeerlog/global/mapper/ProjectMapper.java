@@ -16,6 +16,7 @@ public interface ProjectMapper {
 
     Project projectResponseToProject(ProjectResponse projectResponse);
 
+    @Mapping(source = "content", target = "content")
     ProjectResponse projectToProjectResponse(Project project);
 
     ProjectItemResponse projectToProjectItemResponse(Project project);

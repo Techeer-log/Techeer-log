@@ -39,4 +39,5 @@ public class ProjectResponse {
     private List<ProjectMemberResponse> projectMemberResponseList;
     private List<NonRegisterProjectMemberResponse> nonRegisterProjectMemberResponseList;
     private List<FrameworkResponse> frameworkResponseList;
+
 }

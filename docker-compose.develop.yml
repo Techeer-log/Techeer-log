@@ -12,6 +12,12 @@ services:
     ports:
       - "3306:3306"
 
+  redis:
+    image: "redis:alpine"
+    container_name: "redis"
+    ports:
+      - "6379:6379"
+
   nginx:
     build:
       context: ./nginx
@@ -29,7 +35,9 @@ services:
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
   backend1:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-develop
     container_name: backend1
     restart: always
 #    networks:
@@ -49,7 +57,9 @@ services:
     command: [ "java", "-jar", "/app.jar" ]
 
   backend2:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-develop
     container_name: backend2
     restart: always
     env_file:

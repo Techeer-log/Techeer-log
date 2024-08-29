@@ -17,12 +17,12 @@ export interface ProjectType {
   mainImageUrl: string;
   projectMemberRequestList: ProjectMember[];
   nonRegisterProjectMemberRequestList: ProjectMember[];
-  frontprojectMemberList: ProjectMember[];
-  backprojectMemberList: ProjectMember[];
+  frontprojectMemberList: string[];
+  backprojectMemberList: string[];
   leader: string;
 
-  frontframeworkRequestList: Framework[];
-  backframeworkRequestList: Framework[];
+  frontframeworkRequestList: string[];
+  backframeworkRequestList: string[];
 
   frameworkResponseList: Framework[];
 
@@ -47,4 +47,5 @@ export interface ProjectType {
   changeframeworkResponseList: (value: any) => void;
   changecontent: (value: any) => void;
   setProjectData: (data: ProjectData) => void;
+  resetStore: () => void; // 추가된 부분
 }

@@ -69,8 +69,7 @@ public class MemberController {
                 .body(resultResponse);
     }
 
-    // 수정 필요
-    // 닉네임 수정 구현해 볼 것
+
     @Operation(summary = "프로필 수정", description = "프로필 수정 기능")
     @PatchMapping(consumes = "multipart/form-data")
     public ResponseEntity<SimpleResultResponse> editMember(@RequestPart(value = "data", required = false) EditMemberRequest editMemberRequest,

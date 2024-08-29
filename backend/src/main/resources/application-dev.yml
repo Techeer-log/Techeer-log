@@ -32,6 +32,11 @@ spring:
     image:
       address: ${DEFAULT_IMAGE}
 
+  data:
+    redis:
+      host: redis
+      port: 6379
+
 security:
   jwt:
     token:

@@ -42,6 +42,16 @@ export default function NavBar({ scrollRef }: { scrollRef: React.RefObject<HTMLD
             )}
           </div>
           <div className="flex flex-row justify-center box-sizing-border">
+            {nickname && (
+              <span
+                onClick={() => navigate('/mypage')}
+                className="cursor-pointer break-words font-['Pretendard'] font-normal text-[1rem] leading-[1.5] text-[#FFFFFF]"
+              >
+                마이페이지
+              </span>
+            )}
+          </div>
+          <div className="flex flex-row justify-center box-sizing-border">
             <span
               onClick={cursorMove}
               className="cursor-pointer break-words font-['Pretendard'] font-normal text-[1rem] leading-[1.5] text-[#FFFFFF]"

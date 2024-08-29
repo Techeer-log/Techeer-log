@@ -1,18 +1,23 @@
 package com.techeerlog.scrap.service;
 
 import com.techeerlog.auth.dto.AuthInfo;
+import com.techeerlog.framework.dto.FrameworkResponse;
+import com.techeerlog.global.mapper.FrameworkMapper;
 import com.techeerlog.global.support.UtilMethod;
 import com.techeerlog.member.domain.Member;
 import com.techeerlog.project.domain.Project;
+import com.techeerlog.project.enums.ProjectStatusEnum;
 import com.techeerlog.project.exception.ProjectNotFoundException;
 import com.techeerlog.project.repository.ProjectRepository;
 import com.techeerlog.scrap.domain.Scrap;
-import com.techeerlog.scrap.dto.ScrapResponse;
+import com.techeerlog.scrap.dto.ScrapProjectItemResponse;
 import com.techeerlog.scrap.exception.ScrapAlreadyExistsException;
 import com.techeerlog.scrap.exception.ScrapNotFoundException;
 import com.techeerlog.scrap.repository.ScrapRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,12 +27,16 @@ public class ScrapService {
     private final ProjectRepository projectRepository;
     private final UtilMethod utilMethod;
 
+    private final FrameworkMapper frameworkMapper;
+
     public ScrapService(ScrapRepository scrapRepository,
                         ProjectRepository projectRepository,
-                        UtilMethod utilMethod) {
+                        UtilMethod utilMethod,
+                        FrameworkMapper frameworkMapper) {
         this.scrapRepository = scrapRepository;
         this.projectRepository = projectRepository;
         this.utilMethod = utilMethod;
+        this.frameworkMapper = frameworkMapper;
     }
 
     public void createScrap(Long projectId, AuthInfo authInfo) {
@@ -56,8 +65,35 @@ public class ScrapService {
         if (scrap.isEmpty()) {
             throw new ScrapNotFoundException();
         }
-        Long scrapId = scrap.get().getId();
         scrapRepository.delete(scrap.get());
     }
+
+    public List<ScrapProjectItemResponse> findScrapList(AuthInfo authInfo) {
+        List<Scrap> scraps = scrapRepository.findAllByMemberId(authInfo.getId());
+        List<ScrapProjectItemResponse> scrappedProjects = new ArrayList<>();
+
+        for (Scrap scrap : scraps) {
+            Project project = scrap.getProject();
+
+            List<FrameworkResponse> frameworkResponses = project.getProjectFrameworkList().stream()
+                    .map(projectFramework -> frameworkMapper.frameworkToFrameworkResponse(projectFramework.getFramework()))
+                    .toList();
+
+            ScrapProjectItemResponse scrapProjectItemResponse = new ScrapProjectItemResponse(
+                    project.getId(),
+                    project.getMainImageUrl(),
+                    project.getTitle(),
+                    project.getSubtitle(),
+                    true,
+                    project.getProjectStatusEnum() == ProjectStatusEnum.RUNNING,
+                    frameworkResponses
+
+            );
+            scrappedProjects.add(scrapProjectItemResponse);
+
+        }
+        return scrappedProjects;
+    }
+
 
 }

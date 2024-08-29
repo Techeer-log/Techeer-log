@@ -24,11 +24,12 @@ export function LogIn() {
     }
   };
 
-  const { login, setNickname } = useAuthStore();
+  const { login, setNickname, setLoginId: setAuthLoginId } = useAuthStore();
   const handleNickname = async () => {
     try {
       const response = await axiosInstance.get('/api/v1/members/profile');
       setNickname(response.data.data.nickname);
+      setLoginId(response.data.data.loginId);
       navigate('/');
     } catch (error) {
       console.error('닉네임 정보를 가져오는데 실패했습니다', error);
@@ -47,7 +48,8 @@ export function LogIn() {
       const newAccessToken = response.headers['authorization'];
       const newRefreshToken = response.headers['refresh-token'];
 
-      login(newAccessToken, newRefreshToken);
+      login(loginId, newAccessToken, newRefreshToken);
+      setAuthLoginId(loginId); // 추가: loginId를 상태로 설정
 
       handleNickname();
     } catch (error) {

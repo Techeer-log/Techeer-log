@@ -18,7 +18,7 @@ export const Project = ({ projectId }: { projectId: number }) => {
 
   if (data) {
     return (
-      <div>
+      <div className="pb-[10rem] bg-[#111111]">
         <ProjectView data={data} />
       </div>
     );

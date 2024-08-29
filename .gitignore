@@ -27,3 +27,4 @@ logs
 nginx/nginx-develop.conf
 .DS_Store
 
+testing/grafana/

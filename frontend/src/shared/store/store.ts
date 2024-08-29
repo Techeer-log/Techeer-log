@@ -1,32 +1,34 @@
 import create from 'zustand';
 import { ProjectType } from '../types/projectStore.ts';
 
-const useStore = create<ProjectType>((set) => ({
+const initialState = {
+  //초기 상태 정의
   title: '',
   subtitle: '',
   content: '',
   mainImageUrl: '',
-
   startDate: '',
   endDate: '',
   platform: '웹',
   projectType: '부트캠프',
   year: 2024,
-  semester: '동계',
+  semester: '하계',
   projectStatus: '서비스 운영 중',
   githubLink: '',
   blogLink: '',
   websiteLink: '',
-
   projectMemberRequestList: [],
   nonRegisterProjectMemberRequestList: [],
   leader: '',
   frontprojectMemberList: [],
   backprojectMemberList: [],
-
   frameworkResponseList: [],
   frontframeworkRequestList: [],
   backframeworkRequestList: [],
+};
+
+const useStore = create<ProjectType>((set) => ({
+  ...initialState,
 
   changeTitle: (value: any) =>
     set({
@@ -136,15 +138,24 @@ const useStore = create<ProjectType>((set) => ({
         data.nonRegisterProjectMemberResponseList.find((member) => member.projectMemberTypeEnum === 'LEADER')?.name ||
         '',
       frontprojectMemberList:
-        data.nonRegisterProjectMemberResponseList.filter((member) => member.projectMemberTypeEnum === 'FRONTEND') || [],
+        data.nonRegisterProjectMemberResponseList
+          .filter((member) => member.projectMemberTypeEnum === 'FRONTEND')
+          .map((item) => item.name) || [],
       backprojectMemberList:
-        data.nonRegisterProjectMemberResponseList.filter((member) => member.projectMemberTypeEnum === 'BACKEND') || [],
+        data.nonRegisterProjectMemberResponseList
+          .filter((member) => member.projectMemberTypeEnum === 'BACKEND')
+          .map((item) => item.name) || [],
 
       frameworkResponseList: data.frameworkResponseList || [],
       frontframeworkRequestList:
-        data.frameworkResponseList.filter((framework) => framework.frameworkTypeEnum === 'FRONTEND') || [],
+        data.frameworkResponseList.filter((framework) => framework.frameworkTypeEnum === 'FRONTEND').map((item) => item.name) || [],
       backframeworkRequestList:
-        data.frameworkResponseList.filter((framework) => framework.frameworkTypeEnum === 'BACKEND') || [],
+        data.frameworkResponseList.filter((framework) => framework.frameworkTypeEnum === 'BACKEND').map((item) => item.name) || [],
+    }),
+
+  resetStore: () =>
+    set({
+      ...initialState,
     }),
 }));
 

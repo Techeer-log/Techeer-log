@@ -42,7 +42,7 @@ public class MemberService extends BaseEntity {
     @Transactional
     public Member signUp(SignupRequest signupRequest) {
         validate(signupRequest);
-        String defaultProfileImageUrl = "https://console-log.s3.ap-northeast-2.amazonaws.com/default/teecher.png";
+        String defaultProfileImageUrl = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
 
         Member member = Member.builder()
                 .loginId(new LoginId(signupRequest.getLoginId()))
@@ -110,23 +110,19 @@ public class MemberService extends BaseEntity {
             return;
         }
 
+        // 닉네임 수정
         if (!editMemberRequest.getNickname().isEmpty() && !editMemberRequest.getNickname().equals(member.getNickname())) {
             Nickname validNickname = new Nickname(editMemberRequest.getNickname());
             validateUniqueNickname(validNickname);
             member.updateNickname(validNickname);
         }
 
-        if (!editMemberRequest.getPassword().equals(member.getPassword()) && !editMemberRequest.getPassword().isEmpty()) {
-            Password validPassword = Password.of(encryptor, editMemberRequest.getPassword());
-            member.updatePassword(validPassword);
+        // 한 줄 소개 수정
+        if (editMemberRequest.getIntroduction() != null
+                && !editMemberRequest.getIntroduction().equals(member.getIntroduction())) {
+            member.updateIntroduction(editMemberRequest.getIntroduction());
         }
 
-        multipartFile.ifPresent(file -> {
-            if (!file.isEmpty()) {
-                String profileImageUrl = amazonS3Service.upload(editMemberRequest.getNickname(), file);
-                member.updateProfileImageUrl(profileImageUrl);
-            }
-        });
     }
 
     private void validateUniqueNickname(Nickname validNickname) {

@@ -57,7 +57,7 @@ public class AuthController {
         AuthInfo authInfo = authService.login(loginRequest);
         String accessToken = tokenManager.createAccessToken(authInfo);
         String refreshToken = tokenManager.createRefreshToken();
-        refreshTokenService.saveToken(refreshToken, authInfo.getId());
+        refreshTokenService.saveToken(refreshToken, authInfo.getId()); // 수정
 
         SimpleResultResponse resultResponse = new SimpleResultResponse(LOGIN_SUCCESS);
 
@@ -77,7 +77,8 @@ public class AuthController {
         String refreshToken = AuthorizationExtractor.extractRefreshToken(request);
 
         // memberId와 토큰 정보가 다르면, error 를 throw 한다
-        refreshTokenService.matches(refreshToken, memberId);
+        refreshTokenService.matches(refreshToken, memberId); // 수정
+        // 수정 -> redis에 refresh token이 있는지 없는지만 확인하면 됨
 
         String accessToken = tokenManager.createAccessToken(authInfo);
 

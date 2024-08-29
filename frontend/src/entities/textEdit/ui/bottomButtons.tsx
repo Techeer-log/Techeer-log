@@ -26,6 +26,7 @@ export const bottomButtons = ({ setStep }: any) => {
     projectMemberRequestList,
     nonRegisterProjectMemberRequestList,
     frameworkResponseList,
+    resetStore,
   } = useStore();
 
   const [imageUrl, setImageUrl] = useState<string>('');
@@ -77,32 +78,13 @@ export const bottomButtons = ({ setStep }: any) => {
     frameworkResponseList,
   };
 
-  //임시
-  const projectData2 = {
-    title,
-    subtitle,
-    onlyText,
-    startDate,
-    endDate,
-    platform,
-    projectType,
-    year,
-    semester,
-    projectStatus,
-    githubLink,
-    blogLink,
-    websiteLink,
-    imageUrl,
-    projectMemberRequestList,
-    nonRegisterProjectMemberRequestList,
-    frameworkResponseList,
-  };
-
   const handleSubmit = useMutation({
     mutationFn: () => api.UploadProject(projectData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projectList'] });
       navigate('/');
+
+      resetStore(); // 완료 후 store 값 초기화
     },
     onError: (error) => {
       alert('프로젝트 등록에 실패하였습니다.' + error);
@@ -127,10 +109,11 @@ export const bottomButtons = ({ setStep }: any) => {
   }, [projectId]);
 
   const editMutation = useMutation({
-    mutationFn: (projectId: number) => api.putProject({ projectData2, projectId }),
+    mutationFn: (projectId: number) => api.putProject({ projectData, projectId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projectList'] });
-      navigate('/');
+      navigate(`/projectview/${projectId}`);
+      resetStore(); // 완료 후 store 값 초기화
     },
     onError: (error) => {
       alert('프로젝트 수정에 실패하였습니다.' + error);

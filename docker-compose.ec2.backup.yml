@@ -1,0 +1,80 @@
+version: "3.8"
+
+volumes:
+  build_folder: null
+
+services:
+  mysqldb:
+    image: jaebin19/console-log:mysqldb
+    container_name: mysqldb
+    env_file:
+      - "./db.env"
+    expose:
+      - "3306"
+
+  nginx:
+    image: jaebin19/console-log:nginx
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      #docker-compose.yml과 같은 레벨에 둔 nginx.conf를 mount.
+      - ./certbot/conf:/etc/letsencrypt:rw
+      - ./certbot/www:/var/www/certbot:rw
+      - ./nginx/nginx-ec2.conf:/etc/nginx/nginx.conf
+      - build_folder:/var/www/frontend:ro
+    tty: true
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+  backend1:
+    image: jaebin19/console-log:backend
+    container_name: backend1
+    restart: always
+    env_file:
+      - "./backend-secret.env"
+      - "./spring-source.env"
+    environment:
+      - SERVER_PORT=8080
+      - ACTIVE_PROFILE=deploy
+    depends_on:
+      - mysqldb
+    ports:
+      - "8080:8080"
+    command: [ "java", "-jar", "/app.jar" ]
+
+  backend2:
+    image: jaebin19/console-log:backend
+    container_name: backend2
+    restart: always
+    env_file:
+      - "./backend-secret.env"
+      - "./spring-source.env"
+    environment:
+      - SERVER_PORT=8081
+      - ACTIVE_PROFILE=deploy
+    depends_on:
+      - mysqldb
+    ports:
+      - "8081:8081"
+    command: [ "java", "-jar", "/app.jar" ]
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt:rw
+      - ./certbot/www:/var/www/certbot:rw
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - nginx
+
+  frontend:
+    image: jaebin19/console-log:frontend
+    restart: always
+    container_name: frontend
+    volumes:
+      - build_folder:/frontend/volume:rw
+    tty: true

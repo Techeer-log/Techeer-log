@@ -4,11 +4,11 @@ import { ChangeEvent, useState } from 'react';
 import useStore from '../../../shared/store/store';
 
 export const HeaderInput = () => {
-  const [title, setTitle] = useState<string>('');
-  const [subtitle, setSubtitle] = useState<string>('');
   const { changeTitle, changeSubtitle } = useStore();
   const preTitle = useStore.getState().title;
   const preSubTitle = useStore.getState().subtitle;
+  const [title, setTitle] = useState<string>(preTitle);
+  const [subtitle, setSubtitle] = useState<string>(preSubTitle);
 
   const titleonchange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);

@@ -6,7 +6,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(consolelog.store)
+domains=(www.techeer.site)
 rsa_key_size=4096
 docker_file="docker-compose.ec2.yml"
 data_path="./certbot"

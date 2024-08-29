@@ -52,35 +52,45 @@ public class DummyMethod {
 
     private void createMembers() {
         List<Member> members = Arrays.asList(
-                new Member(1L, new LoginId("test1"), new Password("1234"), new Nickname("test1"), "profileImageUrl1"),
-                new Member(2L, new LoginId("test2"), new Password("1234"), new Nickname("test2"), "profileImageUrl2"),
-                new Member(3L, new LoginId("test3"), new Password("1234"), new Nickname("test3"), "profileImageUrl3"),
-                new Member(4L, new LoginId("test4"), new Password("1234"), new Nickname("test4"), "profileImageUrl4")
+                new Member(1L, new LoginId("test1"), new Password("1234"), new Nickname("test1"), "profileImageUrl1", "introduction1"),
+                new Member(2L, new LoginId("test2"), new Password("1234"), new Nickname("test2"), "profileImageUrl2", "introduction2"),
+                new Member(3L, new LoginId("test3"), new Password("1234"), new Nickname("test3"), "profileImageUrl3", "introduction3"),
+                new Member(4L, new LoginId("test4"), new Password("1234"), new Nickname("test4"), "profileImageUrl4", "introduction4")
         );
         memberRepository.saveAll(members);
     }
+
 
     private void createProjects() {
         Member member = memberRepository.findById(1L).orElse(null);
 
         List<Project> projects = new ArrayList<>();
         Long i = 1L;
-        for (; i <= 10; i++) {
-            projects.add(new Project(
-                    i, "mainImageUrl1", "title1", "subtitle1", "content1", LocalDate.now(), LocalDate.now(), PlatformEnum.WEB, ProjectTypeEnum.PERSONAL_PROJECT, ProjectTeamNameEnum.A, 2023, SemesterEnum.FIRST, RankEnum.NONE, ProjectStatusEnum.COMPLETED, "githubLink1", "blogLink1", "websiteLink1", member, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
-            ));
-        }
-        for (; i <= 20; i++) {
-            projects.add(new Project(
-                    i, "mainImageUrl1", "title1", "subtitle1", "content1", LocalDate.now(), LocalDate.now(), PlatformEnum.WEB, ProjectTypeEnum.PERSONAL_PROJECT, ProjectTeamNameEnum.B, 2023, SemesterEnum.FIRST, RankEnum.NONE, ProjectStatusEnum.COMPLETED, "githubLink1", "blogLink1", "websiteLink1", member, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
-            ));
-        }
-        for (; i <= 30; i++) {
-            projects.add(new Project(
-                    i, "mainImageUrl1", "title1", "subtitle1", "content1", LocalDate.now(), LocalDate.now(), PlatformEnum.WEB, ProjectTypeEnum.PERSONAL_PROJECT, ProjectTeamNameEnum.C, 2023, SemesterEnum.FIRST, RankEnum.NONE, ProjectStatusEnum.COMPLETED, "githubLink1", "blogLink1", "websiteLink1", member, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
-            ));
+        ProjectTeamNameEnum[] teamNames = ProjectTeamNameEnum.values();
+        RankEnum[] ranks = {RankEnum.FIRST, RankEnum.SECOND, RankEnum.THIRD, RankEnum.FOURTH, RankEnum.FIFTH};
+
+        int[] years = {2022, 2023, 2024};
+        SemesterEnum[] semesters = {SemesterEnum.FIRST, SemesterEnum.SECOND};
+
+        for (int year : years) {
+            for (SemesterEnum semester : semesters) {
+                for (int j = 0; j < 5; j++) {
+                    RankEnum rank = ranks[j];
+
+                    projects.add(new Project(
+                            i++, "mainImageUrl" + i, "title" + i, "subtitle" + i, "content" + i,
+                            LocalDate.now(), LocalDate.now(), PlatformEnum.WEB, ProjectTypeEnum.BOOTCAMP,
+                            teamNames[j % teamNames.length], year, semester,
+                            rank, ProjectStatusEnum.COMPLETED,
+                            "githubLink" + i, "blogLink" + i, "websiteLink" + i, member,
+                            new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+                    ));
+                }
+            }
         }
 
         projectRepository.saveAll(projects);
     }
+
+
 }

@@ -17,10 +17,11 @@ export interface Project {
   endDate: string;
   platform: 'WEB' | 'APP' | 'WEB_APP';
   projectTypeEnum: 'BOOTCAMP' | 'PERSONAL_PROJECT' | 'TEAM_PROJECT';
+  projectTeamNameEnum: string;
   year: number;
   semesterEnum: 'FIRST' | 'SECOND' | 'ALL'; // 학기 정보
   projectStatusEnum: 'RUNNING' | 'COMPLETED' | 'PREPARING';
-  rankEnum: 'FIRST' | 'SECOND' | 'THIRD' | 'NONE';
+  rankEnum: 'FIRST' | 'SECOND' | 'THIRD' | 'FOURTH' | 'FIFTH' | 'NONE';
   loveCount: number;
   writer: Writer;
   frameworkResponseList: Framework[];

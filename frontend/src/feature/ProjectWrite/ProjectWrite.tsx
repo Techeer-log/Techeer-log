@@ -13,6 +13,7 @@ export const ProjectWrite = ({ setStep }: any) => {
   const [markdown, setMarkdown] = useState('');
   const {
     content,
+    mainImageUrl,
     changecontent,
     leader,
     changenonRegisterProjectMemberRequestList,
@@ -50,7 +51,19 @@ export const ProjectWrite = ({ setStep }: any) => {
       projectFrameworkList3.push({ name: item, frameworkTypeEnum: 'BACKEND' });
     });
     changeframeworkResponseList([...projectFrameworkList2, ...projectFrameworkList3]);
+
+    if (mainImageUrl) {
+      setMarkdown(`![](${mainImageUrl})` + '\n' + content);
+      changecontent(`![](${mainImageUrl})` + '\n' + content);
+    } else {
+      setMarkdown(content);
+      changecontent(content);
+    }
   }, []);
+
+  useEffect(() => {
+    changecontent(markdown);
+  }, [markdown]);
 
   // Markdown 내용이 변경될 때 호출되는 함수
   const onsetImageurl = (markdown: string) => {
@@ -96,11 +109,11 @@ export const ProjectWrite = ({ setStep }: any) => {
     if (markdown === '') setMarkdown(markdown + '[링크텍스트](이곳에 주소를 입력하세요.)');
     else setMarkdown(markdown + '\n[링크텍스트](이곳에 주소를 입력하세요.)');
   };
-
   const handleButtonQuoteChange = () => {
     if (markdown === '') setMarkdown('> ');
     else setMarkdown(markdown + '\n' + '> ');
   };
+
   return (
     <div>
       <div className="flex flex-row items-center w-full h-[2.5rem] bg-[#212121] pl-[2.7rem]">
@@ -137,52 +150,50 @@ export const ProjectWrite = ({ setStep }: any) => {
         </button>
         <button
           onClick={handleButtonTiltChange}
-          className="w-12 h-fit flex items-center justify-center cursor-pointer bg-transparent outline-none border-none"
+          className="flex items-center justify-center w-12 bg-transparent border-none outline-none cursor-pointer h-fit"
         >
           <img src={italic} className="flex w-[1.2rem]" />
         </button>
         <button
           onClick={handleButtonStrikeThroughChange}
-          className="w-12 h-fit flex items-center justify-center cursor-pointer bg-transparent outline-none border-none"
+          className="flex items-center justify-center w-12 bg-transparent border-none outline-none cursor-pointer h-fit"
         >
           <img src={strikethrough} className="flex w-[1.2rem]" />
         </button>
         <div className="h-[60%] w-0.5 bg-[#4D4D4D] mx-2"></div>
         <button
           onClick={handleButtonQuoteChange}
-          className="w-12 h-fit flex items-center justify-center cursor-pointer bg-transparent outline-none border-none"
+          className="flex items-center justify-center w-12 bg-transparent border-none outline-none cursor-pointer h-fit"
         >
           <img src={quote} className="flex w-[1.4rem]" />
         </button>
         <button
           onClick={handleLinkTextChange}
-          className="w-12 h-fit flex items-center justify-center cursor-pointer bg-transparent outline-none border-none"
+          className="flex items-center justify-center w-12 bg-transparent border-none outline-none cursor-pointer h-fit"
         >
           <img src={link} className="flex w-[1.3rem]" />
         </button>
         <ImageUpload setImageurl={onsetImageurl} />
         <button
           onClick={handleButtonCodeChange}
-          className="w-12 h-fit flex items-center justify-center cursor-pointer bg-transparent outline-none border-none"
+          className="flex items-center justify-center w-12 bg-transparent border-none outline-none cursor-pointer h-fit"
         >
           <img src={code} className="flex w-[1.3rem]" />
         </button>
       </div>
       {/* 텍스트 상자 */}
-      <div className="flex flex-wrap w-auto h-[67vh]">
+      <div className="flex flex-wrap w-auto h-[74vh]">
         {/* 왼쪽 박스 - editor */}
         <div className="flex flex-col w-1/2 border-solid border-r-[0.3rem] border-[#212121] h-full font-['Pretendard'] p-[2.5rem_3.5rem]">
           <textarea
             value={markdown}
             onChange={handleMarkdownChange}
-            placeholder={content || '내용을 입력하세요.'}
-            // rows={10}
-            // cols={100}
+            placeholder={'내용을 입력하세요. 가장 처음에 첨부된 이미지가 썸네일 이미지로 지정됩니다.'}
             className="bg-transparent inline-flex text-[1.2rem] outline-none cursor-text border-none text-gray-400 focus:text-white px-1 h-full w-full resize-none leading-6 overflow-y-auto"
           />
         </div>
         {/* 오른쪽 박스 - preview */}
-        <div className="flex flex-col w-1/2 h-full font-['Pretendard'] p-[2.5rem_3.5rem] whitespace-pre-wrap">
+        <div className="flex flex-col w-1/2 h-full font-['Pretendard'] p-[2.5rem_3.5rem] whitespace-pre-wrap overflow-y-scroll">
           <MarkdownView markdown={markdown} />
         </div>
       </div>

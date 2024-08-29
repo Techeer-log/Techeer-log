@@ -8,6 +8,8 @@ public enum RankEnum implements EnumModel {
     FIRST("FIRST"),
     SECOND("SECOND"),
     THIRD("THIRD"),
+    FOURTH("FOURTH"),
+    FIFTH("FIFTH"),
     NONE("NONE")
     ;
 

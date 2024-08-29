@@ -11,7 +11,6 @@ export const ScrapButton = ({ projectId, scraped }: { projectId: number; scraped
   const postMutation = useMutation({
     mutationFn: (projectId: number) => postScrap(projectId),
     onSuccess: () => {
-      console.log('post완료');
       queryClient.invalidateQueries({ queryKey: ['projectData'] });
       //optimitic update적용 예정
     },
@@ -20,7 +19,6 @@ export const ScrapButton = ({ projectId, scraped }: { projectId: number; scraped
   const deleteMutation = useMutation({
     mutationFn: (projectId: number) => deleteScrap(projectId),
     onSuccess: () => {
-      console.log('delete완료');
       queryClient.invalidateQueries({ queryKey: ['projectData'] });
     },
   });

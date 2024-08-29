@@ -8,7 +8,6 @@ export const getProjectList = async ({
   pageStart: number | unknown;
   size: number;
 }): Promise<Project[]> => {
-  // console.log("pageParam",pageParam)
   const params = {
     pageStart: pageStart,
     pageSize: size,
@@ -20,8 +19,6 @@ export const getProjectList = async ({
   const response = await axiosInstance.get(`/api/v1/projects/list`, {
     params,
   });
-
-  // console.log(response?.data.data);
 
   return response.data.data.projectItemResponseList;
 };

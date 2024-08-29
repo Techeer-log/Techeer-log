@@ -25,6 +25,7 @@ public enum ResultCode {
     UPDATE_PROJECT_SUCCESS("P003", 201, "게시글 수정 성공"),
     DELETE_SUCCESS("P004", 200, "게시글 삭제 성공"),
     FIND_PROJECT_LIST_SUCCESS("P005", 200, "게시글 리스트 조회 성공"),
+    FIND_PROJECT_TEAM_NAME_LIST_SUCCESS("P006", 200, "정렬된 프로젝트 조회 성공"),
 
     // Comment
     COMMENT_CREATED_SUCCESS("C001", 201, "댓글 등록 성공"),
@@ -42,6 +43,7 @@ public enum ResultCode {
     // Scrap
     SCRAP_CREATED_SUCCESS("S001", 201, "스크랩 성공"),
     SCRAP_DELETED_SUCCESS("S002", 200, "스크랩 취소"),
+    SCRAP_LIST_SUCCESS("S003", 200, "스크랩 리스트 조회 성공"),
     ;
 
 

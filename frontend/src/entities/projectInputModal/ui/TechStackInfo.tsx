@@ -3,20 +3,29 @@ import check from '../../../shared/assets/image/modalImg/check.svg';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
 import useStore from '../../../shared/store/store';
+import infoIcon from '../../../shared/assets/image/infoIcon.png';
 
 export const TechStackInfo = ({ setStep }: any) => {
-  const [fronttags, setFrontTags] = useState<string[]>([]);
-  const [backtags, setBackTags] = useState<string[]>([]);
   const [trigger1, setTrigger1] = useState<boolean>(false);
   const [trigger2, setTrigger2] = useState<boolean>(false);
-  const { changefrontframeworkRequestList, changebackframeworkRequestList } = useStore();
-  const nextStep = () => {
-    setStep('next');
+  const {
+    changefrontframeworkRequestList,
+    changebackframeworkRequestList,
+    frontframeworkRequestList,
+    backframeworkRequestList,
+  } = useStore();
 
+  const [fronttags, setFrontTags] = useState<string[]>(frontframeworkRequestList);
+  const [backtags, setBackTags] = useState<string[]>(backframeworkRequestList);
+
+  const nextStep = () => {
     changefrontframeworkRequestList(fronttags);
     changebackframeworkRequestList(backtags);
+    setStep('next');
   };
   const prevStep = () => {
+    changefrontframeworkRequestList(fronttags);
+    changebackframeworkRequestList(backtags);
     setStep('prev');
   };
   const handleFrontChange = (tag: string[]) => {
@@ -44,7 +53,7 @@ export const TechStackInfo = ({ setStep }: any) => {
       <div className="flex flex-row justify-center items-center font-['Pretendard'] bg-[#242424] rounded-2xl border-solid border-[#8a8991] border-[0.1rem] h-[42rem] w-[40rem] text-white box-border">
         <div className="relative flex flex-col gap-[2.5rem] items-center w-[85%] h-[91%]">
           {/*상단 제목, 스텝퍼*/}
-          <div className=" flex flex-row justify-between box-border w-[100%] h-fit">
+          <div className="flex flex-row justify-between box-border w-[100%] h-fit">
             <div className="break-words font-['Pretendard'] font-semibold text-[1.3rem] leading-[1.3] text-[#F1EEF9]">
               프로젝트에 사용한 기술을 입력해주세요.
             </div>
@@ -66,6 +75,12 @@ export const TechStackInfo = ({ setStep }: any) => {
               </div>
             </div>
           </div>
+          <div className="flex flex-wrap content-start w-[100%] mb-[-1rem] items-center">
+            <img src={infoIcon} className="w-[1.2rem] h-[1.2rem]"></img>
+            <div className="break-words font-['Pretendard'] font-semibold text-[1rem] leading-[1] ml-[0.3rem] text-[#5cd5bc]">
+              각 기술에서 가장 처음에 등록된 태그가 대표 기술로 등록됩니다.
+            </div>
+          </div>
           {/* 하단 입력 정보 전체*/}
           <div className="flex flex-col gap-[1.7rem] w-[100%] h-fit">
             <div className="flex flex-col w-full gap-2">
@@ -75,7 +90,7 @@ export const TechStackInfo = ({ setStep }: any) => {
                   value={backtags}
                   onChange={handleBackChange}
                   className="rounded-[0.4rem] border-[#9492A0] border-solid border-[0.08rem] w-[100%] pl-[0.3rem] h-[6.1rem] text-[#9492A0] text-[0.8rem] font-['Pretendard'] bg-transparent focus:border-white focus:text-white outline-none"
-                  inputProps={{ placeholder: '백엔드 사용 기술을 입력하세요.' }}
+                  inputProps={{ placeholder: '백엔드 사용 기술을 입력 후 엔터를 눌러주세요.' }}
                 />
               </label>
             </div>
@@ -86,7 +101,7 @@ export const TechStackInfo = ({ setStep }: any) => {
                   value={fronttags}
                   onChange={handleFrontChange}
                   className="rounded-[0.4rem] border-[#9492A0] border-solid border-[0.08rem] w-[100%] pl-[0.3rem] h-[6.1rem] text-[#9492A0] text-[0.8rem] font-['Pretendard'] bg-transparent focus:border-white focus:text-white outline-none"
-                  inputProps={{ placeholder: '프론트엔드 사용 기술을 입력하세요.' }}
+                  inputProps={{ placeholder: '프론트엔드 사용 기술을 입력 후 엔터를 눌러주세요.' }}
                 />
               </label>
             </div>

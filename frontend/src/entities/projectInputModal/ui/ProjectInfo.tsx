@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import useStore from '../../../shared/store/store';
 import { Calendar } from './Calendar';
 import moment from 'moment';
+import * as projectWrite from '../../../shared/constants/index';
 
 export const ProjectInfo = ({ setStep }: any) => {
   const {
@@ -161,6 +162,9 @@ export const ProjectInfo = ({ setStep }: any) => {
   useEffect(() => {
     changestartDate(moment(projectDate1).format('YYYY.MM.DD'));
     changeendDate(moment(projectDate2).format('YYYY.MM.DD'));
+    changeblogLink(blogLink);
+    changegithubLink(githubLink);
+    changewebsiteLink(websiteLink);
   }, []);
 
   const calendarOpen1 = () => {
@@ -180,8 +184,23 @@ export const ProjectInfo = ({ setStep }: any) => {
     changeendDate(moment(selectedDate).format('YYYY.MM.DD'));
   };
 
+  useEffect(() => {
+    const engChange = (platformName: any) => {
+      const platform = projectWrite.projectWrite.find((item) => item.enum === platformName);
+      return platform?.name;
+    };
+    const enumPlatform = engChange(platform);
+    const enumProjectType = engChange(projectType);
+    const enumSemester = engChange(semester);
+    if (semester === 'ALL') changesemester('');
+    const enumProjectStatus = engChange(projectStatus);
+    if (enumPlatform !== undefined) changeplatform(enumPlatform);
+    if (enumProjectType !== undefined) changeprojectType(enumProjectType);
+    if (enumSemester !== undefined) changesemester(enumSemester);
+    if (enumProjectStatus !== undefined) changeprojectStatus(enumProjectStatus);
+  }, []);
   return (
-    <div className="flex flex-col justify-center items-center bg-black bg-opacity-90 w-screen h-screen z-20">
+    <div className="z-20 flex flex-col items-center justify-center w-screen h-screen bg-black bg-opacity-90">
       <div className="flex flex-row justify-center items-center font-['Pretendard'] bg-[#242424] rounded-2xl border-solid border-[#8a8991] border-[0.1rem] h-[42rem] w-[40rem] text-white box-border">
         <div className="flex flex-col gap-[2.5rem] items-center w-full h-full p-[1.8rem_0_1.8rem_0]">
           {/*상단 제목, 스텝퍼*/}
@@ -263,13 +282,22 @@ export const ProjectInfo = ({ setStep }: any) => {
                     <div className="absolute mt-12 bg-[rgba(148,146,160,1)] shadow-lg rounded-sm border-[1px] border-solid w-[16rem]">
                       {/* Dropdown 내용 */}
                       <ul className="w-full text-[0.8rem]">
-                        <li className="px-4 py-2 cursor-pointer  hover:bg-gray-100" onClick={handleChangeProjectType1}>
+                        <li
+                          className="px-4 py-2 cursor-pointer  hover:bg-gray-100 hover:text-[black]"
+                          onClick={handleChangeProjectType1}
+                        >
                           부트캠프
                         </li>
-                        <li onClick={handleChangeProjectType2} className="px-4 py-2 hover:bg-gray-100  cursor-pointer">
+                        <li
+                          onClick={handleChangeProjectType2}
+                          className="px-4 py-2 hover:bg-gray-100 hover:text-[black]  cursor-pointer"
+                        >
                           팀 프로젝트
                         </li>
-                        <li onClick={handleChangeProjectType3} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        <li
+                          onClick={handleChangeProjectType3}
+                          className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer"
+                        >
                           개인 프로젝트
                         </li>
                       </ul>
@@ -296,24 +324,39 @@ export const ProjectInfo = ({ setStep }: any) => {
                         {/* Dropdown 내용 */}
                         <ul className="w-full text-[0.8rem]">
                           <li
-                            className="px-4 py-2 cursor-pointer fontsize-[1rem] hover:bg-gray-100"
+                            className="px-4 py-2 cursor-pointer fontsize-[1rem] hover:bg-gray-100 hover:text-[black]"
                             onClick={handleChangeSemester1}
                           >
                             2024 동계
                           </li>
-                          <li onClick={handleChangeSemester2} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li
+                            onClick={handleChangeSemester2}
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer"
+                          >
                             2024 하계
                           </li>
-                          <li onClick={handleChangeSemester3} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li
+                            onClick={handleChangeSemester3}
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer"
+                          >
                             2023 동계
                           </li>
-                          <li onClick={handleChangeSemester4} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li
+                            onClick={handleChangeSemester4}
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer"
+                          >
                             2023 하계
                           </li>
-                          <li onClick={handleChangeSemester5} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li
+                            onClick={handleChangeSemester5}
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer"
+                          >
                             2022 동계
                           </li>
-                          <li onClick={handleChangeSemester6} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li
+                            onClick={handleChangeSemester6}
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer"
+                          >
                             2022 하계
                           </li>
                         </ul>
@@ -328,10 +371,10 @@ export const ProjectInfo = ({ setStep }: any) => {
                           >
                             2024
                           </li>
-                          <li onClick={handleChangeYear2} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li onClick={handleChangeYear2} className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                             2023
                           </li>
-                          <li onClick={handleChangeYear3} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li onClick={handleChangeYear3} className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                             2022
                           </li>
                         </ul>
@@ -359,20 +402,20 @@ export const ProjectInfo = ({ setStep }: any) => {
                         {/* Dropdown 내용 */}
                         <ul className="w-full text-[0.8rem]">
                           <li
-                            className="px-4 py-2 cursor-pointer  hover:bg-gray-100 text-white"
+                            className="px-4 py-2 cursor-pointer  hover:bg-gray-100 hover:text-[black] text-white"
                             onClick={handleChangePlatform1}
                           >
                             웹
                           </li>
                           <li
                             onClick={handleChangePlatform2}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-white"
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer text-white"
                           >
                             앱
                           </li>
                           <li
                             onClick={handleChangePlatform3}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-white"
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer text-white"
                           >
                             웹 앱
                           </li>
@@ -399,14 +442,14 @@ export const ProjectInfo = ({ setStep }: any) => {
                         {/* Dropdown 내용 */}
                         <ul className="w-full text-[0.8rem]">
                           <li
-                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-white"
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 hover:text-[black] text-white"
                             onClick={handleChangeService1}
                           >
                             서비스 운영 중
                           </li>
                           <li
                             onClick={handleChangeService2}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-white"
+                            className="px-4 py-2 hover:bg-gray-100 hover:text-[black] cursor-pointer text-white"
                           >
                             서비스 중단
                           </li>
@@ -428,6 +471,7 @@ export const ProjectInfo = ({ setStep }: any) => {
                   </div>
                   <label className="block w-full">
                     <input
+                      value={githubLink}
                       onChange={githubChange}
                       type="text"
                       name=""
@@ -446,6 +490,7 @@ export const ProjectInfo = ({ setStep }: any) => {
                   </div>
                   <label className="block w-full">
                     <input
+                      value={blogLink}
                       onChange={blogChange}
                       type="text"
                       name=""
@@ -463,6 +508,7 @@ export const ProjectInfo = ({ setStep }: any) => {
                   </div>
                   <label className="block w-full">
                     <input
+                      value={websiteLink}
                       type="text"
                       onChange={websiteChange}
                       name=""

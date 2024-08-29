@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class EditMemberRequest {
     private String nickname;
-    private String password;
+    private String introduction;
 }

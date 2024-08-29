@@ -30,15 +30,14 @@ export default function MainPage() {
 
   const data: prizeDate = {
     projectTypeEnum: 'BOOTCAMP',
-    year: 2023,
-    semesterEnum: 'FIRST',
+    year: 2024,
+    semesterEnum: 'SECOND',
   };
   function renameSemester(semester: string) {
     if (semester === 'FIRST') return '동계';
     if (semester === 'SECOND') return '하계';
     else return '';
   }
-  // data.semesterEnum;
 
   return (
     <div className="bg-[#111111] flex flex-col w-screen justify-center items-center">
@@ -78,6 +77,7 @@ export default function MainPage() {
               <EmblaCarousel options={OPTIONS} date={data} />
               <div ref={scrollRef}></div>
             </div>
+            {/*프로젝트 전체*/}
             <div className="flex flex-col items-center justify-center mb-12">
               <img src={iconPoint} className="w-[1.875rem] h-[0.75rem] mb-[1rem]" />
               <span className="font-['Pretendard-Thin'] text-[1.875rem] text-white">

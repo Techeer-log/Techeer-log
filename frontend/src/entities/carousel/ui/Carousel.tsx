@@ -78,7 +78,7 @@ export const EmblaCarousel: React.FC<PropType> = (props) => {
   }, [emblaApi, tweenOpacity]);
 
   const { data, isLoading, isError, error } = usePrizeProjects(date);
-  // console.log('data', data);
+
   if (isLoading) {
     return <div className="bg-transparent w-full h-full">Loading...</div>;
   }

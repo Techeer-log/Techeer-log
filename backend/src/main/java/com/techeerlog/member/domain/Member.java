@@ -1,6 +1,5 @@
 package com.techeerlog.member.domain;
 
-import com.techeerlog.auth.domain.RefreshToken;
 import com.techeerlog.global.config.BaseEntity;
 import com.techeerlog.member.enums.RoleType;
 import jakarta.persistence.*;
@@ -35,6 +34,10 @@ public class Member extends BaseEntity {
     private String profileImageUrl;
 
     @Getter
+    @Column(name = "introduction")
+    private String introduction = "";
+
+    @Getter
     @Enumerated(EnumType.STRING)
     private RoleType roleType = RoleType.USER;
 
@@ -55,12 +58,13 @@ public class Member extends BaseEntity {
 
 
     @Builder
-    public Member(Long id, LoginId loginId, Password password, Nickname nickname, String profileImageUrl) {
+    public Member(Long id, LoginId loginId, Password password, Nickname nickname, String profileImageUrl, String introduction) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
+        this.introduction = introduction != null ? introduction : "";
     }
 
     public void updateNickname(Nickname nickname) {
@@ -73,6 +77,10 @@ public class Member extends BaseEntity {
 
     public void updatePassword(Password password) {
         this.password = password;
+    }
+
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public boolean hasId(Long id) {

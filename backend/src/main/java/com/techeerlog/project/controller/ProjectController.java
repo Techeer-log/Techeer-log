@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.techeerlog.global.response.ResultCode.*;
 
@@ -89,4 +91,17 @@ public class ProjectController {
 
         return ResponseEntity.status(FIND_PROJECT_LIST_SUCCESS.getStatus()).body(listResultResponse);
     }
+
+
+    @Operation(summary = "부트캠프 심사위원용", description = "부트캠프 심사위원")
+    @GetMapping("/projects/bootcamp")
+    public ResponseEntity<ResultResponse<ProjectItemListResponse>> findSortedProjectList(@Valid ProjectListRequest projectListRequest, @Login AuthInfo authInfo) {
+        ProjectItemListResponse sortedProjectListResponse = projectService.findSortedProjectListResponse(projectListRequest, authInfo);
+
+        ResultResponse<ProjectItemListResponse> resultResponse
+                = new ResultResponse<>(FIND_PROJECT_TEAM_NAME_LIST_SUCCESS, sortedProjectListResponse);
+
+        return ResponseEntity.status(FIND_PROJECT_TEAM_NAME_LIST_SUCCESS.getStatus()).body(resultResponse);
+    }
+
 }

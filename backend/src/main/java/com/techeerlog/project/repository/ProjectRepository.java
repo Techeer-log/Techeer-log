@@ -42,4 +42,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             @Param("semesterEnum") SemesterEnum semesterEnum,
             @Param("rankList") List<RankEnum> rankList
     );
+
+    @Query("SELECT p FROM Project p WHERE p.year = :year AND p.semesterEnum = :semesterEnum")
+    Slice<Project> findAllByYearAndSemesterSorted(
+            @Param("year") int year,
+            @Param("semesterEnum") SemesterEnum semesterEnum,
+            Pageable pageable);
+
+
 }

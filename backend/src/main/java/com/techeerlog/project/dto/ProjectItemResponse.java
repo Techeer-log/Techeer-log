@@ -20,6 +20,7 @@ public class ProjectItemResponse {
     private String mainImageUrl;
     private String title;
     private String subtitle;
+    private String content;
     private LocalDate startDate;
     private LocalDate endDate;
     private PlatformEnum platform;

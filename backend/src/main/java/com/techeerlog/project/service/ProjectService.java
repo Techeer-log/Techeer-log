@@ -19,6 +19,7 @@ import com.techeerlog.project.domain.*;
 import com.techeerlog.project.dto.*;
 import com.techeerlog.project.enums.RankEnum;
 import com.techeerlog.project.enums.SearchFieldEnum;
+import com.techeerlog.project.enums.SemesterEnum;
 import com.techeerlog.project.exception.PageableAccessException;
 import com.techeerlog.project.exception.ProjectNotFoundException;
 import com.techeerlog.project.repository.NonRegisterProjectMemberRepository;
@@ -144,7 +145,7 @@ public class ProjectService {
                 prizeProjectListRequest.getProjectTypeEnum(),
                 prizeProjectListRequest.getYear(),
                 prizeProjectListRequest.getSemesterEnum(),
-                List.of(RankEnum.FIRST, RankEnum.SECOND, RankEnum.THIRD)
+                List.of(RankEnum.FIRST, RankEnum.SECOND, RankEnum.THIRD, RankEnum.FOURTH, RankEnum.FIFTH)
         );
 
         return projectListToProjectItemListResponse(projectSlice, authInfo);
@@ -181,7 +182,6 @@ public class ProjectService {
         String searchKeyword = projectListRequest.getSearchKeyword();
 
         Sort sort = Sort.by(
-                new Sort.Order(sortDirection, "projectTeamNameEnum"),
                 new Sort.Order(sortDirection, "id")
         );
 
@@ -302,6 +302,20 @@ public class ProjectService {
             throw new AuthorizationException();
         }
     }
+
+    public ProjectItemListResponse findSortedProjectListResponse(ProjectListRequest projectListRequest, AuthInfo authInfo) {
+        int year = 2024;
+        SemesterEnum semester = SemesterEnum.SECOND;
+        Slice<Project> sortedProjectSlice = getSortedProjectSlice(projectListRequest, year, semester);
+        return projectListToProjectItemListResponse(sortedProjectSlice, authInfo);
+    }
+
+    private Slice<Project> getSortedProjectSlice(ProjectListRequest projectListRequest, int year, SemesterEnum semester) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "projectTeamNameEnum", "id");
+        Pageable pageable = PageRequest.of(projectListRequest.getPageStart(), projectListRequest.getPageSize(), sort);
+        return projectRepository.findAllByYearAndSemesterSorted(year, semester, pageable);
+    }
+
 }
 
 

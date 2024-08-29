@@ -42,6 +42,7 @@ CREATE TABLE member
     updated_at        datetime              NULL,
     deleted           BIT(1)                NULL,
     profile_image_url VARCHAR(255)          NULL,
+    introduction      VARCHAR(255)          NULL,
     role_type         VARCHAR(255)          NULL,
     login_id          VARCHAR(255)          NULL,
     password          VARCHAR(255)          NULL,
