@@ -17,6 +17,7 @@ import com.techeerlog.member.exception.MemberNotFoundException;
 import com.techeerlog.member.repository.MemberRepository;
 import com.techeerlog.project.domain.*;
 import com.techeerlog.project.dto.*;
+import com.techeerlog.project.enums.ProjectTeamNameEnum;
 import com.techeerlog.project.enums.RankEnum;
 import com.techeerlog.project.enums.SearchFieldEnum;
 import com.techeerlog.project.enums.SemesterEnum;
@@ -28,6 +29,9 @@ import com.techeerlog.project.repository.ProjectMemberRepository;
 import com.techeerlog.project.repository.ProjectRepository;
 import com.techeerlog.scrap.repository.ScrapRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -44,7 +48,6 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ProjectService {
     private final ProjectRepository projectRepository;
-    private final ViewCountManager viewCountManager;
     private final UtilMethod utilMethod;
     private final ProjectMapper projectMapper;
     private final MemberMapper memberMapper;
@@ -57,21 +60,12 @@ public class ProjectService {
     private final LoveRepository loveRepository;
     private final ScrapRepository scrapRepository;
 
-    @Transactional
+    @Cacheable(value = "project", key = "#projectId")
     public ProjectResponse findProjectResponse(Long projectId, AuthInfo authInfo) {
 
         Project findProject = findProjectById(projectId);
 
-        ProjectResponse projectResponse = projectMapper.projectToProjectResponse(findProject);
-        projectResponse.setWriter(memberMapper.memberToMemberResponse(findProject.getMember()));
-        projectResponse.setLoveCount(findProject.getLoveList().size());
-        projectResponse.setLoved(loveRepository.findByMemberIdAndProjectId(authInfo.getId(), findProject.getId()).isPresent());
-        projectResponse.setScraped(scrapRepository.findByMemberIdAndProjectId(authInfo.getId(), findProject.getId()).isPresent());
-        projectResponse.setProjectMemberResponseList(getProjectMemberResponseList(findProject.getProjectMemberList()));
-        projectResponse.setNonRegisterProjectMemberResponseList(getNonRegisterProjectMemberResponseList(findProject.getNonRegisterProjectMemberList()));
-        projectResponse.setFrameworkResponseList(getFrameworkResponseList(findProject.getProjectFrameworkList()));
-
-        return projectResponse;
+        return createProjectResponse(findProject, authInfo);
     }
 
     private List<NonRegisterProjectMemberResponse> getNonRegisterProjectMemberResponseList(List<NonRegisterProjectMember> nonRegisterProjectMemberList) {
@@ -110,7 +104,8 @@ public class ProjectService {
     }
 
     @Transactional
-    public void updateProject(Long id, ProjectRequest projectRequest, AuthInfo authInfo) {
+    @CachePut(value = "project", key = "#id")
+    public ProjectResponse updateProject(Long id, ProjectRequest projectRequest, AuthInfo authInfo) {
         Project project = findProjectById(id);
         validateOwner(authInfo, project);
 
@@ -124,10 +119,13 @@ public class ProjectService {
         saveProjectMemberList(project, projectRequest.getProjectMemberRequestList());
         saveProjectNonRegisterProjectMemberList(project, projectRequest.getNonRegisterProjectMemberRequestList());
         saveProjectFrameworkList(project, projectRequest.getFrameworkRequestList());
+
+        return createProjectResponse(project, authInfo);
     }
 
 
     @Transactional
+    @CacheEvict(value = "project", key = "#id")
     public void deleteProject(Long id, AuthInfo authInfo) {
         Project project = findProjectById(id);
         validateOwner(authInfo, project);
@@ -314,6 +312,18 @@ public class ProjectService {
         Sort sort = Sort.by(Sort.Direction.ASC, "projectTeamNameEnum", "id");
         Pageable pageable = PageRequest.of(projectListRequest.getPageStart(), projectListRequest.getPageSize(), sort);
         return projectRepository.findAllByYearAndSemesterSorted(year, semester, pageable);
+    }
+
+    private ProjectResponse createProjectResponse(Project project, AuthInfo authInfo){
+        ProjectResponse projectResponse = projectMapper.projectToProjectResponse(project);
+        projectResponse.setWriter(memberMapper.memberToMemberResponse(project.getMember()));
+        projectResponse.setLoveCount(project.getLoveList().size());
+        projectResponse.setLoved(loveRepository.findByMemberIdAndProjectId(authInfo.getId(), project.getId()).isPresent());
+        projectResponse.setScraped(scrapRepository.findByMemberIdAndProjectId(authInfo.getId(), project.getId()).isPresent());
+        projectResponse.setProjectMemberResponseList(getProjectMemberResponseList(project.getProjectMemberList()));
+        projectResponse.setNonRegisterProjectMemberResponseList(getNonRegisterProjectMemberResponseList(project.getNonRegisterProjectMemberList()));
+        projectResponse.setFrameworkResponseList(getFrameworkResponseList(project.getProjectFrameworkList()));
+        return projectResponse;
     }
 
 }

@@ -56,8 +56,9 @@ public class ProjectController {
     public ResponseEntity<ResultResponse<ProjectResponse>> updatePost(@PathVariable("projectId") Long projectId,
                                                                       @RequestBody ProjectRequest projectRequest,
                                                                       @Login AuthInfo authInfo) {
-        projectService.updateProject(projectId, projectRequest, authInfo);
-        ProjectResponse projectResponse = projectService.findProjectResponse(projectId, authInfo);
+//        projectService.updateProject(projectId, projectRequest, authInfo);
+//        ProjectResponse projectResponse = projectService.findProjectResponse(projectId, authInfo);
+        ProjectResponse projectResponse = projectService.updateProject(projectId, projectRequest, authInfo);
         ResultResponse<ProjectResponse> resultResponse = new ResultResponse<>(UPDATE_PROJECT_SUCCESS, projectResponse);
 
         return ResponseEntity.status(UPDATE_PROJECT_SUCCESS.getStatus()).body(resultResponse);
