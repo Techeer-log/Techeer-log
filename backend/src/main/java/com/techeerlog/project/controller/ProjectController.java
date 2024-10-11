@@ -4,6 +4,7 @@ import com.techeerlog.auth.dto.AuthInfo;
 import com.techeerlog.global.response.ResultResponse;
 import com.techeerlog.global.support.token.Login;
 import com.techeerlog.project.dto.*;
+import com.techeerlog.project.enums.SemesterEnum;
 import com.techeerlog.project.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -111,10 +112,13 @@ public class ProjectController {
     }
 
 
-    @Operation(summary = "부트캠프 심사위원용", description = "부트캠프 심사위원")
+    @Operation(summary = "부트캠프 심사위원용", description = "특정 연도와 학기의 프로젝트를 조회")
     @GetMapping("/projects/bootcamp")
-    public ResponseEntity<ResultResponse<ProjectItemListResponse>> findSortedProjectList(@Valid ProjectListRequest projectListRequest, @Login AuthInfo authInfo) {
-        ProjectItemListResponse sortedProjectListResponse = projectService.findSortedProjectListResponse(projectListRequest, authInfo);
+    public ResponseEntity<ResultResponse<ProjectItemListResponse>> findSortedProjectList(@RequestParam(name = "year", required = false, defaultValue = "2024") int year,
+                                                                                         @RequestParam(name = "semester", required = false, defaultValue = "SECOND") SemesterEnum semester,
+                                                                                         @Valid ProjectListRequest projectListRequest,
+                                                                                         @Login AuthInfo authInfo) {
+        ProjectItemListResponse sortedProjectListResponse = projectService.findSortedProjectListResponse(projectListRequest, year, semester, authInfo);
 
         ResultResponse<ProjectItemListResponse> resultResponse
                 = new ResultResponse<>(FIND_PROJECT_TEAM_NAME_LIST_SUCCESS, sortedProjectListResponse);
