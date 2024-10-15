@@ -3,16 +3,14 @@ package com.techeerlog.project.dto;
 import com.techeerlog.framework.dto.FrameworkResponse;
 import com.techeerlog.member.dto.MemberResponse;
 import com.techeerlog.project.enums.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectResponse {
@@ -39,5 +37,4 @@ public class ProjectResponse {
     private List<ProjectMemberResponse> projectMemberResponseList;
     private List<NonRegisterProjectMemberResponse> nonRegisterProjectMemberResponseList;
     private List<FrameworkResponse> frameworkResponseList;
-
 }
