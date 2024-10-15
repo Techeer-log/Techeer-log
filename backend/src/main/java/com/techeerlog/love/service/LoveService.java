@@ -3,6 +3,7 @@ package com.techeerlog.love.service;
 import com.techeerlog.auth.dto.AuthInfo;
 import com.techeerlog.global.support.UtilMethod;
 import com.techeerlog.love.domain.Love;
+import com.techeerlog.love.exception.LoveAlreadyExistsException;
 import com.techeerlog.love.exception.LoveNotFoundException;
 import com.techeerlog.love.repository.LoveRepository;
 import com.techeerlog.member.domain.Member;
@@ -36,7 +37,7 @@ public class LoveService {
 
         // 좋아요 중복 체크
         if (loveRepository.existsByMemberIdAndProjectId(member.getId(), project.getId())) {
-            throw new LoveNotFoundException();
+            throw new LoveAlreadyExistsException();
         }
         Love love = Love.builder()
                 .project(project)
