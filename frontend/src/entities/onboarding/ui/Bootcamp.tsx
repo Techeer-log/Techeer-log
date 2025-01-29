@@ -5,8 +5,6 @@ import { EmblaCarousel } from '../../../entities/carousel';
 import { useEffect, useRef } from 'react';
 import { EmblaOptionsType } from 'embla-carousel';
 import { prizeDate } from '../../../shared/types/prizeDate';
-import useScrollCount from '../hook/useScrollHook';
-// import useScrollFadeIn from '../hook/useScrollFadIn';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -14,16 +12,6 @@ export default function Bootcamp() {
   const OPTIONS: EmblaOptionsType = { loop: true };
   const queryParams = new URLSearchParams(location.search);
   const searchQuery = queryParams.get('search') || '';
-
-  const animatedItem1 = useScrollCount(8, 0, 1000);
-  const animatedItem2 = useScrollCount(600, 0, 1000);
-  const animatedItem3 = useScrollCount(100, 0, 3000);
-
-  // const animatedItem = {
-  //   0: useScrollFadeIn('up', 1, 0),
-  //   1: useScrollFadeIn('up', 1, 0.2),
-  //   2: useScrollFadeIn('up', 1, 0.3),
-  // };
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -45,34 +33,23 @@ export default function Bootcamp() {
 
   return (
     <div className="w-[100vw] h-[70vw] flex flex-col my-20 items-center text-white">
-      <div className="flex gap-[2rem] my-[2rem]">
-        <div className="w-[33rem] border-t-[0.1rem] border-t-white border-solid"></div>
-        <span className="font-['Pre-S']">Since 2020</span>
-        <div className="w-[33rem] border-t-[0.1rem] border-t-white border-solid"></div>
-      </div>
-      {/* 카운트 */}
-      <div className="flex gap-[15rem]">
-        <div className="flex flex-col items-center w-[6rem]">
-          <span className="font-['Pre-S'] text-[3.5rem]" {...animatedItem1}>
-            8기
+      {/* 우수 선정작 */}
+      <div className="w-[75rem] mt-[6.063rem] flex flex-col justify-center mb-[5rem]">
+        <div className="flex flex-col items-center justify-center my-12">
+          <img src={iconPoint} className="w-[1.875rem] h-[0.75rem] mb-[1rem]" />
+          <span className="font-['Pretendard-Thin'] text-[1.875rem] text-white">
+            {data.year} {renameSemester(data.semesterEnum)} 부트캠프
+            <a className="font-['Pretendard-Bold']"> 우수 선정작</a>
           </span>
-          <span className="font-['Pretendard-Medium'] text-[1.1rem]">부트캠프 기수</span>
         </div>
-        <div className="flex flex-col items-center">
-          <span className="font-['Pre-S'] text-[3.5rem]" {...animatedItem2}>
-            600명 +
-          </span>
-          <span className="font-['Pretendard-Medium'] text-[1.1rem]">누적 수료생</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="font-['Pre-S'] text-[3.5rem]" {...animatedItem3}>
-            100개 +
-          </span>
-          <span className="font-['Pretendard-Medium'] text-[1.1rem]">진행한 프로젝트</span>
+        <div className="overflow-x-hidden w-[98%] mx-auto mb-[6.25rem]">
+          <EmblaCarousel options={OPTIONS} date={data} />
+          <div ref={scrollRef}></div>
         </div>
       </div>
+
       {/* 텍스트 */}
-      <div className="w-[100vw] h-[35vw] my-[10rem] flex flex-col bg-cover bg-[url('./entities/onboarding/image/bg.png')]">
+      <div className="w-[100vw] h-[35vw] my-[13rem] flex flex-col bg-cover bg-[url('./entities/onboarding/image/bg.png')]">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -99,7 +76,7 @@ export default function Bootcamp() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
+          viewport={{ once: true }}
           transition={{
             ease: 'easeInOut',
             duration: 1,
@@ -116,7 +93,7 @@ export default function Bootcamp() {
           }}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
+          viewport={{ once: true }}
           transition={{
             ease: 'easeInOut',
             duration: 1,
@@ -133,7 +110,7 @@ export default function Bootcamp() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
+          viewport={{ once: true }}
           transition={{
             ease: 'easeInOut',
             duration: 1,
@@ -142,20 +119,6 @@ export default function Bootcamp() {
         >
           <img className="w-[30rem] h-[30rem] flex mx-auto" src={object} alt="" />
         </motion.div>
-      </div>
-      {/* 우수 선정작 */}
-      <div className="w-[75rem] mt-[6.063rem] flex flex-col justify-center mb-[15rem]">
-        <div className="flex flex-col items-center justify-center my-12">
-          <img src={iconPoint} className="w-[1.875rem] h-[0.75rem] mb-[1rem]" />
-          <span className="font-['Pretendard-Thin'] text-[1.875rem] text-white">
-            {data.year} {renameSemester(data.semesterEnum)} 부트캠프
-            <a className="font-['Pretendard-Bold']"> 우수 선정작</a>
-          </span>
-        </div>
-        <div className="overflow-x-hidden w-[98%] mx-auto mb-[6.25rem]">
-          <EmblaCarousel options={OPTIONS} date={data} />
-          <div ref={scrollRef}></div>
-        </div>
       </div>
     </div>
   );
