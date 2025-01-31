@@ -48,7 +48,7 @@ export default function MySwiper() {
           <img src="/party.png" alt="Party Image" className="w-full h-full object-contain" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/session1.png" alt="Hang Image" className="w-full h-full object-contain" />
+          <img src="/session2.png" alt="Hang Image" className="w-full h-full object-contain" />
         </SwiperSlide>
         <SwiperSlide>
           <img src="/hang2.png" alt="Hang Image" className="w-full h-full object-contain" />
