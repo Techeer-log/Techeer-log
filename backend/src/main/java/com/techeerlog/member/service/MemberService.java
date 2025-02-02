@@ -11,6 +11,7 @@ import com.techeerlog.member.domain.Password;
 import com.techeerlog.member.dto.*;
 import com.techeerlog.member.exception.*;
 import com.techeerlog.member.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,12 +23,12 @@ import java.util.Optional;
 public class MemberService extends BaseEntity {
 
     private final MemberRepository memberRepository;
-    private final EncryptorI encryptor;
+    private final EncryptorI newEncryptor;
     private final AmazonS3Service amazonS3Service;
 
-    public MemberService(MemberRepository memberRepository, EncryptorI encryptor, AmazonS3Service amazonS3Service) {
+    public MemberService(MemberRepository memberRepository, @Qualifier("getNewEncryptor") EncryptorI newEncryptor, AmazonS3Service amazonS3Service) {
         this.memberRepository = memberRepository;
-        this.encryptor = encryptor;
+        this.newEncryptor = newEncryptor;
         this.amazonS3Service = amazonS3Service;
     }
 
@@ -38,9 +39,10 @@ public class MemberService extends BaseEntity {
 
         Member member = Member.builder()
                 .loginId(new LoginId(signupRequest.getLoginId()))
-                .password(Password.of(encryptor, signupRequest.getPassword()))
+                .password(Password.of(newEncryptor, signupRequest.getPassword()))
                 .profileImageUrl(defaultProfileImageUrl)
                 .nickname(new Nickname(signupRequest.getNickname()))
+                .isSaltNew(true)
                 .build();
         memberRepository.save(member);
         return member;
@@ -138,7 +140,7 @@ public class MemberService extends BaseEntity {
 
         // 기존 비밀번호와 요청으로 입력된 비밀번호가 일치한지 확인
         String currentPassword = updatePasswordRequest.getCurrentPassword();
-        if(!password.equals(encryptor.encrypt(currentPassword))){
+        if(!password.equals(newEncryptor.encrypt(currentPassword))){
             throw new IncorrectPasswordException();
         }
 
@@ -147,7 +149,7 @@ public class MemberService extends BaseEntity {
 //        Password.validate(newPassword);
 
         // 비밀번호 업데이트
-        member.updatePassword(Password.of(encryptor, newPassword));
+        member.updatePassword(Password.of(newEncryptor, newPassword));
         memberRepository.save(member);
 
     }

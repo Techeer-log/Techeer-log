@@ -41,6 +41,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoleType roleType = RoleType.USER;
 
+    @Getter
+    private boolean isSaltNew;
+
     public String getLoginId() {
         return loginId.getValue();
     }
@@ -56,14 +59,19 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
+    /**
+     * Salt값이 옛버전인지, 신버전인지를 나눴다. 변경하지 않는 이상 old를 쓰는거지.
+     *
+     */
 
     @Builder
-    public Member(Long id, LoginId loginId, Password password, Nickname nickname, String profileImageUrl, String introduction) {
+    public Member(Long id, LoginId loginId, Password password, Nickname nickname, String profileImageUrl, String introduction, boolean isSaltNew) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
+        this.isSaltNew = isSaltNew;
         this.introduction = introduction != null ? introduction : "";
     }
 
@@ -87,6 +95,3 @@ public class Member extends BaseEntity {
         return this.id.equals(id);
     }
 }
-
-
-

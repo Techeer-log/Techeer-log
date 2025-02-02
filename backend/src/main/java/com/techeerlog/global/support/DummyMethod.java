@@ -59,13 +59,13 @@ public class DummyMethod {
     private void createMembers() {
         List<Member> members = Arrays.asList(
                 new Member(1L, new LoginId("test1"), new Password("1234"), new Nickname("test1"),
-                        "profileImageUrl1", "introduction1"),
+                        "profileImageUrl1", "introduction1", true),
                 new Member(2L, new LoginId("test2"), new Password("1234"), new Nickname("test2"),
-                        "profileImageUrl2", "introduction2"),
+                        "profileImageUrl2", "introduction2",true),
                 new Member(3L, new LoginId("test3"), new Password("1234"), new Nickname("test3"),
-                        "profileImageUrl3", "introduction3"),
+                        "profileImageUrl3", "introduction3", true),
                 new Member(4L, new LoginId("test4"), new Password("1234"), new Nickname("test4"),
-                        "profileImageUrl4", "introduction4")
+                        "profileImageUrl4", "introduction4",true)
         );
         memberRepository.saveAll(members);
     }
