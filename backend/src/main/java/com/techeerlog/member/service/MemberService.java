@@ -149,6 +149,7 @@ public class MemberService extends BaseEntity {
 //        Password.validate(newPassword);
 
         // 비밀번호 업데이트
+        member.updateIsSaltNew(true);
         member.updatePassword(Password.of(newEncryptor, newPassword));
         memberRepository.save(member);
 

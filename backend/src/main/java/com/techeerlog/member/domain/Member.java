@@ -94,4 +94,8 @@ public class Member extends BaseEntity {
     public boolean hasId(Long id) {
         return this.id.equals(id);
     }
+
+    public void updateIsSaltNew(boolean isSaltNew) {
+        this.isSaltNew = isSaltNew;
+    }
 }
