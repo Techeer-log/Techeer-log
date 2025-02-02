@@ -1,7 +1,9 @@
 server:
   port: ${COMMON.PORT}
 
-salt: ${COMMON.SALT}
+salt:
+  old: ${COMMON.SALT.OLD}
+  new: ${COMMON.SALT.NEW}
 
 spring:
   config:
