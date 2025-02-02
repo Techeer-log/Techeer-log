@@ -1,5 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
+import bootcamp from '../image/pt.png';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -48,7 +49,7 @@ export default function MySwiper() {
           <img src="/party.png" alt="Party Image" className="w-full h-full object-contain" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/session2.png" alt="Hang Image" className="w-full h-full object-contain" />
+          <img src={bootcamp} alt="BootCamp Image" className="w-full h-full object-contain" />
         </SwiperSlide>
         <SwiperSlide>
           <img src="/hang2.png" alt="Hang Image" className="w-full h-full object-contain" />

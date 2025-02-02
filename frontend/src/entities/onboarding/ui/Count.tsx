@@ -1,7 +1,7 @@
 import useScrollCount from '../hook/useScrollHook';
 
 export default function Count() {
-  const animatedItem1 = useScrollCount(8, 0, 1000);
+  const animatedItem1 = useScrollCount(9, 0, 1000);
   const animatedItem2 = useScrollCount(600, 0, 1000);
   const animatedItem3 = useScrollCount(100, 0, 3000);
   return (
@@ -11,31 +11,23 @@ export default function Count() {
         <span className="font-['Pre-S']">Since 2020</span>
         <div className="w-[33rem] border-t-[0.1rem] border-t-white border-solid"></div>
       </div>
-      <div className="flex gap-[15rem]">
+      <div className="flex gap-[15rem] ml-8">
         <div className="flex flex-col items-center w-[6rem]">
           <span
             className="font-['Pre-S'] text-[3.5rem] w-[8rem] h-[4.5rem] flex items-center justify-center overflow-hidden"
             {...animatedItem1}
-          >
-            8기
-          </span>
+          ></span>
           <span className="font-['Pretendard-Medium'] text-[1.1rem]">부트캠프 기수</span>
         </div>
         <div className="flex flex-col items-center">
-          <span
-            className="font-['Pre-S'] text-[3.5rem] w-[8rem] h-[4.5rem] flex items-center justify-center overflow-hidden"
-            {...animatedItem2}
-          >
-            600명 +
+          <span className="font-['Pre-S'] text-[3.5rem] w-[9rem] h-[4.5rem] flex items-center justify-center overflow-hidden">
+            <span {...animatedItem2} />+
           </span>
           <span className="font-['Pretendard-Medium'] text-[1.1rem]">누적 수료생</span>
         </div>
         <div className="flex flex-col items-center">
-          <span
-            className="font-['Pre-S'] text-[3.5rem] w-[8rem] h-[4.5rem] flex items-center justify-center overflow-hidden"
-            {...animatedItem3}
-          >
-            100개 +
+          <span className="font-['Pre-S'] text-[3.5rem] w-[8rem] h-[4.5rem] flex items-center justify-center overflow-hidden">
+            <span {...animatedItem3} />+
           </span>
           <span className="font-['Pretendard-Medium'] text-[1.1rem]">진행한 프로젝트</span>
         </div>
