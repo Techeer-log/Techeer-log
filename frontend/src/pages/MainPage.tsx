@@ -8,6 +8,12 @@ import circle2 from '../entities/onboarding/image/circle2.png';
 import { motion } from 'framer-motion';
 import arrow from '../entities/onboarding/image/arrow.png';
 
+import Swiper from '../entities/onboarding/ui/Swiper.tsx';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import Count from '../entities/onboarding/ui/Count.tsx';
+
 export default function MainPage() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -21,61 +27,43 @@ export default function MainPage() {
     }
   }, [searchQuery]);
 
-  const interBubble = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    let curX = 0;
-    let curY = 0;
-    let tgX = 0;
-    let tgY = 0;
-
-    function move() {
-      curX += (tgX - curX) / 20;
-      curY += (tgY - curY) / 20;
-      if (interBubble.current) {
-        interBubble.current.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
-      }
-      requestAnimationFrame(move);
-    }
-
-    const handleMouseMove = (event: MouseEvent) => {
-      tgX = event.clientX;
-      tgY = event.clientY;
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    move();
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
   const Footer = React.lazy(() => import('../shared/ui/Footer.tsx'));
 
   return (
     <div className="bg-[#111111] flex flex-col w-screen justify-center items-center">
       <NavBar />
       {/* 메인페이지-소개 */}
-      <div className="w-[100vw] h-[41.6vw] flex justify-center items-center gradient-bg">
-        <div className="absolute inset-0 gradients-container">
-          <div className="g1"></div>
-          <div className="g2"></div>
-          <div className="g3"></div>
-          <div className="g4"></div>
-          <div className="g5"></div>
-          <div ref={interBubble} className="interactive"></div>
-        </div>
-        <div className="w-[100vw] h-[100vw] flex flex-col justify-center items-center font-['Pretendard-Regular'] font-normal text-[#FFFFFF]">
-          <span className="font-['Pretendard-Black'] text-[7rem] m-[0_0_1.5rem_0]">TECHEER</span>
-          <span className="font-['Pretendard-Thin'] text-[1.875rem]">
-            테커에서 진행하는 <a className="font-['Pretendard-Medium']">다양한 프로젝트를 한눈에</a>
-          </span>
+      {/* <div className="w-[100vw] h-[908px] flex flex-col justify-center items-center"> */}
+      <div className="relative flex w-[100vw] h-[710px] bg-black">
+        {/** 비디오 영역 */}
+        <div className="absolute z-0 flex justify-center w-full h-full pt-[5rem] top-1/2 left-1/2 z-1 bg-transparent -translate-x-1/2 -translate-y-1/2">
+          <video autoPlay muted className=" " src="/intro.mp4"></video>
         </div>
       </div>
+      {/* </div> */}
+
+      <Count />
+
+      {/** 테커 소개 */}
+      <div className="w-[100vw] h-[20rem] flex flex-col justify-center items-center mt-[3rem] font-['Pretendard-Regular'] font-normal text-[#FFFFFF]">
+        <span className="font-['Pretendard-Black'] text-[5rem]">TECHEER</span>
+        <span className="font-['Pretendard-Thin'] text-[1.5rem]">
+          실리콘밸리에서 직접 운영하는{' '}
+          <a className="font-['Pretendard-Medium'] text-blue-500">
+            {'{'} 실리콘밸리식 프로젝트와 멘토 시스템 {'}'}
+          </a>{' '}
+          으로 운영되는 코딩스쿨
+        </span>
+      </div>
+      {/** 활동 사진 영역 */}
+      <Swiper />
+
       {/* 부트캠프 소개*/}
       <Bootcamp />
+
       {/* 프로젝트 소개*/}
       <Project />
+
       {/* 테커 */}
       <div className="w-[100vw] h-[100w] flex flex-col relative">
         <motion.div
