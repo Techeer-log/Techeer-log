@@ -9,10 +9,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class Encryptor implements EncryptorI {
 
-    public Encryptor() {}
+    private final String salt;
 
-    @Value("${salt}")
-    private String salt;
+    public Encryptor(String salt) {
+        this.salt = salt;
+    }
 
     @Override
     public String encrypt(String text) {

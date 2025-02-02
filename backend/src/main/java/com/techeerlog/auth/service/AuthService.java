@@ -6,24 +6,33 @@ import com.techeerlog.auth.dto.LoginRequest;
 import com.techeerlog.auth.exception.LoginFailedException;
 import com.techeerlog.member.domain.Member;
 import com.techeerlog.member.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
+
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final EncryptorI encryptor;
+    private final EncryptorI oldEncryptor;
+    private final EncryptorI newEncryptor;
 
-    public AuthService(MemberRepository memberRepository, EncryptorI encryptor) {
+    public AuthService(MemberRepository memberRepository, @Qualifier("getOldEncryptor") EncryptorI oldEncryptor, @Qualifier("getNewEncryptor") EncryptorI newEncryptor) {
         this.memberRepository = memberRepository;
-        this.encryptor = encryptor;
+        this.oldEncryptor = oldEncryptor;
+        this.newEncryptor = newEncryptor;
     }
 
     public AuthInfo login(LoginRequest loginRequest) {
-        String loginId = loginRequest.getLoginId();
-        String password = encryptor.encrypt(loginRequest.getPassword());
-        Member member = memberRepository.findByLoginIdValueAndPasswordValue(loginId, password)
+        Member member = memberRepository.findByLoginIdValue(loginRequest.getLoginId())
                 .orElseThrow(LoginFailedException::new);
+
+        EncryptorI chosenEncryptor = member.isSaltNew() ? newEncryptor : oldEncryptor;
+        String hashedPassword = chosenEncryptor.encrypt(loginRequest.getPassword());
+        if (!hashedPassword.equals(member.getPassword())) {
+            throw new LoginFailedException();
+        }
+
         return new AuthInfo(member.getId(), member.getRoleType().getName(), member.getNickname());
     }
 }
