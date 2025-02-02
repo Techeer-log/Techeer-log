@@ -24,11 +24,14 @@ public class MemberService extends BaseEntity {
 
     private final MemberRepository memberRepository;
     private final EncryptorI newEncryptor;
+    private final EncryptorI oldEncryptor;
     private final AmazonS3Service amazonS3Service;
 
-    public MemberService(MemberRepository memberRepository, @Qualifier("getNewEncryptor") EncryptorI newEncryptor, AmazonS3Service amazonS3Service) {
+
+    public MemberService(MemberRepository memberRepository, @Qualifier("getOldEncryptor") EncryptorI oldEncryptor, @Qualifier("getNewEncryptor") EncryptorI newEncryptor, AmazonS3Service amazonS3Service) {
         this.memberRepository = memberRepository;
         this.newEncryptor = newEncryptor;
+        this.oldEncryptor = oldEncryptor;
         this.amazonS3Service = amazonS3Service;
     }
 
@@ -133,26 +136,28 @@ public class MemberService extends BaseEntity {
 
     @Transactional
     public void updatePassword(AuthInfo authInfo, UpdatePasswordRequest updatePasswordRequest) {
-        // 기존 비밀번호를 찾기
+        // 회원 조회
         Member member = memberRepository.findById(authInfo.getId())
                 .orElseThrow(MemberNotFoundException::new);
-        String password = member.getPassword();
-
-        // 기존 비밀번호와 요청으로 입력된 비밀번호가 일치한지 확인
+        String storedPassword = member.getPassword();
         String currentPassword = updatePasswordRequest.getCurrentPassword();
-        if(!password.equals(newEncryptor.encrypt(currentPassword))){
+
+        // 회원의 isSaltNew 플래그에 따라 적절한 Encryptor 선택
+        EncryptorI encryptorForCheck = member.isSaltNew() ? newEncryptor : oldEncryptor;
+
+        // 기존 비밀번호 검증
+        if (!storedPassword.equals(encryptorForCheck.encrypt(currentPassword))) {
             throw new IncorrectPasswordException();
         }
 
-        // 일치하다면 새로운 비밀번호가 유효한지 확인
+        // 새 비밀번호 처리 (필요시 추가 검증 가능)
         String newPassword = updatePasswordRequest.getNewPassword();
-//        Password.validate(newPassword);
+        // Password.validate(newPassword); // 유효성 검증
 
-        // 비밀번호 업데이트
+        // 비밀번호 업데이트 시, 최신 정책(NEW salt) 적용
         member.updateIsSaltNew(true);
         member.updatePassword(Password.of(newEncryptor, newPassword));
         memberRepository.save(member);
-
     }
 
 }
