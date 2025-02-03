@@ -23,7 +23,7 @@ export default function Bootcamp() {
   const data: prizeDate = {
     projectTypeEnum: 'BOOTCAMP',
     year: 2024,
-    semesterEnum: 'SECOND',
+    semesterEnum: 'FIRST',
   };
   function renameSemester(semester: string) {
     if (semester === 'FIRST') return '동계';
