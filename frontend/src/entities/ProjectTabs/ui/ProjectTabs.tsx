@@ -57,6 +57,7 @@ export const ProjectTabs = ({
             <div className="bg-[#0047FF] z-[2] absolute w-[14.5rem] h-[0.2rem] -ml-1 mt-[0.92rem]"></div>
           )}
         </span>
+        {/* 
         <span
           className={`break-words font-['Pre'] font-[600] text-[1.7rem] ${
             selectedType === '팀 프로젝트' ? 'text-[#fafafa]' : 'text-[#a1a1a1]'
@@ -67,7 +68,7 @@ export const ProjectTabs = ({
           {selectedType === '팀 프로젝트' && (
             <div className="bg-[#0047FF] z-[2] absolute w-[8rem] -ml-[0.5rem] h-[0.2rem] mt-[0.92rem]"></div>
           )}
-        </span>
+        </span> */}
         <Suspense fallback={<div>Loading...</div>}>
           <Search setResult={setResult} />
         </Suspense>

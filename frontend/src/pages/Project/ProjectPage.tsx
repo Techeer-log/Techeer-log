@@ -3,7 +3,7 @@ import Footer from '../../shared/ui/Footer.tsx';
 import { DropDown } from '../../entities/filter';
 import { ProjectList } from '../../entities/projectList';
 import { useEffect, useRef, useState } from 'react';
-import { ProjectTabs } from '../../entities/projectTabs/ui/ProjectTabs.tsx';
+import { ProjectTabs } from '../../entities/ProjectTabs/ui/ProjectTabs.tsx';
 import ListToggle from '../../shared/ui/ListToggle.tsx';
 import { useLocation } from 'react-router';
 
