@@ -29,7 +29,7 @@ function App() {
       const koreaTime = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + 9 * 3600000); // UTC + 9
       const hours = koreaTime.getHours();
 
-      if (hours >= 8 && hours <= 8) {
+      if (hours >= 3 && hours <= 8) {
         setIsNotOpenTime(true);
       } else {
         setIsNotOpenTime(false);
