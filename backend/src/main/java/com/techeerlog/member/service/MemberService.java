@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class MemberService extends BaseEntity {
+public class MemberService {
 
     private final MemberRepository memberRepository;
     private final EncryptorI newEncryptor;
