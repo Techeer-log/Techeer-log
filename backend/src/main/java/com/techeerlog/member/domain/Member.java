@@ -90,6 +90,10 @@ public class Member extends BaseEntity {
     public boolean hasId(Long id) {
         return this.id.equals(id);
     }
+
+    public boolean hasRoleType(RoleType roleType) {
+        return this.roleType.equals(roleType);
+    }
 }
 
 

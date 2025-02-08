@@ -67,6 +67,22 @@ public class AuthController {
                 .body(resultResponse);
     }
 
+    @Operation(summary = "관리자 계정 로그인", description = "관리자 계정 로그인 기능")
+    @PostMapping("/login/admin")
+    public ResponseEntity<SimpleResultResponse> adminLogin(@Valid @RequestBody LoginRequest loginRequest) {
+        AuthInfo authInfo = authService.adminLogin(loginRequest);
+        String accessToken = tokenManager.createAccessToken(authInfo);
+        String refreshToken = tokenManager.createRefreshToken();
+        refreshTokenService.saveToken(refreshToken, authInfo.getId()); // 수정
+
+        SimpleResultResponse resultResponse = new SimpleResultResponse(LOGIN_SUCCESS);
+
+        return ResponseEntity.status(LOGIN_SUCCESS.getStatus())
+                .header(HttpHeaders.AUTHORIZATION, BEARER_STRING + accessToken)
+                .header(REFRESH_TOKEN_STRING, BEARER_STRING + refreshToken)
+                .body(resultResponse);
+    }
+
     @Operation(summary = "토큰 재발급", description = "accessToken 을 재생성")
     @GetMapping("/refresh")
     public ResponseEntity<SimpleResultResponse> refresh(@RequestHeader(REFRESH_TOKEN_STRING) String refresh_token, HttpServletRequest request, @Login AuthInfo authInfo) {

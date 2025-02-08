@@ -22,6 +22,8 @@ public enum ErrorCode {
     // Auth
     AUTHORIZED_ERROR("A001", 400, "접근 권한이 없습니다. 로그인이 유효한지 확인해주세요"),
     LOGIN_FAILED_ERROR("A002", 400, "아이디나 비밀번호가 잘못되었습니다"),
+    ADMIN_LOGIN_REQUIRED("A003", 400, "관리자 계정으로 로그인해야 합니다."),
+    USER_LOGIN_REQUIRED("A004", 400, "일반 계정으로 로그인해야 합니다."),
 
     // Member
     DUPLICATE_NICKNAME_ERROR("M001", 400, "이미 존재하는 닉네임입니다."),

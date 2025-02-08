@@ -3,8 +3,10 @@ package com.techeerlog.auth.service;
 import com.techeerlog.auth.domain.encryptor.EncryptorI;
 import com.techeerlog.auth.dto.AuthInfo;
 import com.techeerlog.auth.dto.LoginRequest;
+import com.techeerlog.auth.exception.AdminLoginRequiredException;
 import com.techeerlog.auth.exception.LoginFailedException;
 import com.techeerlog.member.domain.Member;
+import com.techeerlog.member.enums.RoleType;
 import com.techeerlog.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,19 @@ public class AuthService {
         String password = encryptor.encrypt(loginRequest.getPassword());
         Member member = memberRepository.findByLoginIdValueAndPasswordValue(loginId, password)
                 .orElseThrow(LoginFailedException::new);
+        return new AuthInfo(member.getId(), member.getRoleType().getName(), member.getNickname());
+    }
+
+    public AuthInfo adminLogin(LoginRequest loginRequest) {
+        String loginId = loginRequest.getLoginId();
+        String password = encryptor.encrypt(loginRequest.getPassword());
+        Member member = memberRepository.findByLoginIdValueAndPasswordValue(loginId, password)
+                .orElseThrow(LoginFailedException::new);
+
+        if (!member.hasRoleType(RoleType.ADMIN)) {
+            throw new AdminLoginRequiredException();
+        }
+
         return new AuthInfo(member.getId(), member.getRoleType().getName(), member.getNickname());
     }
 }
