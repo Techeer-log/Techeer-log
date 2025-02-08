@@ -83,6 +83,10 @@ public class Member extends BaseEntity {
         this.introduction = introduction;
     }
 
+    public void updateRoleType(RoleType roleType) {
+        this.roleType = roleType;
+    }
+
     public boolean hasId(Long id) {
         return this.id.equals(id);
     }

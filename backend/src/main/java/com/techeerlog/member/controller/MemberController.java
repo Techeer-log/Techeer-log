@@ -75,6 +75,7 @@ public class MemberController {
                                                            @RequestPart(value = "part", required = false) Optional<MultipartFile> multipartFile,
                                                            @Login AuthInfo authInfo) {
 
+        System.out.println(authInfo.getType());
         memberService.edit(editMemberRequest, authInfo, multipartFile);
         refreshTokenService.deleteToken(authInfo.getId());
 
@@ -93,6 +94,16 @@ public class MemberController {
         SimpleResultResponse resultResponse = new SimpleResultResponse(UPDATE_CODE_SUCCESS);
 
         return ResponseEntity.status(UPDATE_CODE_SUCCESS.getStatus())
+                .body(resultResponse);
+    }
+
+    @Operation(summary = "관리자 계정 생성", description = "관리자 계정 생성 기능")
+    @PostMapping(value = "/signup/admin")
+    public ResponseEntity<ResultResponse<MemberResponse>> createAdmin(@RequestBody SignupRequest signupRequest) {
+        Member member = memberService.createAdmin(signupRequest);
+        ResultResponse<MemberResponse> resultResponse = new ResultResponse<>(SIGNUP_SUCCESS, memberMapper.memberToMemberResponse(member));
+
+        return ResponseEntity.status(SIGNUP_SUCCESS.getStatus())
                 .body(resultResponse);
     }
 }

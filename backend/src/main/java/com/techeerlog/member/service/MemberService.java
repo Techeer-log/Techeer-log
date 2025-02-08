@@ -9,6 +9,7 @@ import com.techeerlog.member.domain.Member;
 import com.techeerlog.member.domain.Nickname;
 import com.techeerlog.member.domain.Password;
 import com.techeerlog.member.dto.*;
+import com.techeerlog.member.enums.RoleType;
 import com.techeerlog.member.exception.*;
 import com.techeerlog.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -150,6 +151,23 @@ public class MemberService extends BaseEntity {
         member.updatePassword(Password.of(encryptor, newPassword));
         memberRepository.save(member);
 
+    }
+
+    @Transactional
+    public Member createAdmin(SignupRequest signupRequest) {
+        validate(signupRequest);
+        String defaultProfileImageUrl = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
+
+        Member member = Member.builder()
+                .loginId(new LoginId(signupRequest.getLoginId()))
+                .password(Password.of(encryptor, signupRequest.getPassword()))
+                .profileImageUrl(defaultProfileImageUrl)
+                .nickname(new Nickname(signupRequest.getNickname()))
+                .build();
+        member.updateRoleType(RoleType.ADMIN);
+
+        memberRepository.save(member);
+        return member;
     }
 
 }

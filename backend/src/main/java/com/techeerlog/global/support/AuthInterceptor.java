@@ -26,7 +26,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         this.tokenManager = tokenManager;
         this.anonymousAllowedPaths = new HashSet<>(Arrays.asList(
                 "/api/v1/auth/login",
-                "/api/v1/members/signup"
+                "/api/v1/members/signup",
+                "/api/v1/members/signup/admin"
         ));
     }
 
