@@ -14,6 +14,7 @@ import com.techeerlog.global.support.UtilMethod;
 import com.techeerlog.love.repository.LoveRepository;
 import com.techeerlog.member.domain.Member;
 import com.techeerlog.member.dto.MemberResponse;
+import com.techeerlog.member.enums.RoleType;
 import com.techeerlog.member.exception.MemberNotFoundException;
 import com.techeerlog.member.repository.MemberRepository;
 import com.techeerlog.project.domain.NonRegisterProjectMember;
@@ -301,6 +302,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void validateOwner(AuthInfo authInfo, Project project) {
+        if (authInfo.hasRole(RoleType.ADMIN.getName())) return;
+
         if (!project.isOwner(authInfo.getId())) {
             throw new AuthorizationException();
         }

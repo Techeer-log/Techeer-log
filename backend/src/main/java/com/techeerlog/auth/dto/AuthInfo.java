@@ -16,4 +16,8 @@ public class AuthInfo {
         this.type = type;
         this.nickname = nickname;
     }
+
+    public boolean hasRole(String type) {
+        return this.type.equals(type);
+    }
 }
